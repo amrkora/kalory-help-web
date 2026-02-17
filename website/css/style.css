@@ -461,10 +461,37 @@ h3 { font-size: 1.4rem; }
 }
 
 .hero-note {
+  display: inline-block;
+  margin-top: 24px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 10px 28px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 100px;
+  animation: slide-up 0.8s ease-out 0.45s backwards, pulse-glow 2.5s ease-in-out infinite;
+}
+
+.coming-soon-icon {
+  margin-right: 8px;
+  font-size: 1.2rem;
+}
+
+[dir="rtl"] .coming-soon-icon {
+  margin-right: 0;
+  margin-left: 8px;
+}
+
+.cta-coming-soon {
+  display: inline-block;
   margin-top: 16px;
-  font-size: 0.9rem;
-  opacity: 0.8;
-  animation: slide-up 0.8s ease-out 0.45s backwards;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 8px 24px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 100px;
 }
 
 .hero .btn-primary {
