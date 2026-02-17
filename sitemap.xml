@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <url>
+    <loc>https://kalory.help/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kalory.help/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://kalory.help/ar/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kalory.help/"/>
+    <lastmod>2026-02-17</lastmod>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://kalory.help/features.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kalory.help/features.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://kalory.help/ar/features.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kalory.help/features.html"/>
+    <lastmod>2026-02-17</lastmod>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://kalory.help/privacy.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kalory.help/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://kalory.help/ar/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kalory.help/privacy.html"/>
+    <lastmod>2026-02-17</lastmod>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://kalory.help/about.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kalory.help/about.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://kalory.help/ar/about.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kalory.help/about.html"/>
+    <lastmod>2026-02-17</lastmod>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://kalory.help/accessibility.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kalory.help/accessibility.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://kalory.help/ar/accessibility.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kalory.help/accessibility.html"/>
+    <lastmod>2026-02-17</lastmod>
+    <priority>0.4</priority>
+  </url>
+
+  <url>
+    <loc>https://kalory.help/ar/</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://kalory.help/ar/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kalory.help/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kalory.help/"/>
+    <lastmod>2026-02-17</lastmod>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://kalory.help/ar/features.html</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://kalory.help/ar/features.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kalory.help/features.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kalory.help/features.html"/>
+    <lastmod>2026-02-17</lastmod>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://kalory.help/ar/privacy.html</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://kalory.help/ar/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kalory.help/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kalory.help/privacy.html"/>
+    <lastmod>2026-02-17</lastmod>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://kalory.help/ar/about.html</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://kalory.help/ar/about.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kalory.help/about.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kalory.help/about.html"/>
+    <lastmod>2026-02-17</lastmod>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://kalory.help/ar/accessibility.html</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://kalory.help/ar/accessibility.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kalory.help/accessibility.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kalory.help/accessibility.html"/>
+    <lastmod>2026-02-17</lastmod>
+    <priority>0.4</priority>
+  </url>
+
+</urlset>
