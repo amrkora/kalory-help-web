@@ -1,0 +1,388 @@
+{
+  "@@locale": "en",
+
+  "navHome": "Home",
+  "navLog": "Log",
+  "navDiscover": "Discover",
+  "navProgress": "Progress",
+  "navProfile": "Profile",
+
+  "discoverTitle": "Discover",
+  "recipesToExplore": "{count} recipes to explore",
+  "@recipesToExplore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "searchRecipes": "Search recipes...",
+  "featured": "FEATURED",
+  "allRecipes": "All Recipes",
+  "recipesCount": "{count} recipes",
+  "@recipesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noRecipesFound": "No recipes found",
+  "nutritionPerServing": "Nutrition per serving",
+  "method": "Method",
+  "viewOnSource": "View on {source}",
+  "@viewOnSource": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "clearSearch": "Clear search",
+
+  "todaysLog": "Today's Log",
+  "searchFoodsToAdd": "Search foods to add...",
+  "quickAdd": "Quick Add",
+  "todaysMeals": "Today's Meals",
+  "noMealsLogged": "No meals logged yet today",
+  "tapAddFood": "Tap \"Add Food\" or use Quick Add above",
+  "addFood": "Add Food",
+  "addItem": "Add item",
+  "deleteMeal": "Delete meal",
+  "deleteMealTitle": "Delete Meal",
+  "deleteMealConfirm": "Remove {mealType} and all its food items?",
+  "@deleteMealConfirm": {
+    "placeholders": {
+      "mealType": { "type": "String" }
+    }
+  },
+  "dailySummary": "Daily Summary",
+  "consumed": "Consumed",
+  "remaining": "Remaining",
+  "goal": "Goal",
+  "servingSize": "Serving size",
+  "customAmount": "Custom amount",
+  "addTo": "Add to {mealType}",
+  "@addTo": {
+    "placeholders": {
+      "mealType": { "type": "String" }
+    }
+  },
+  "mealOptions": "Meal options",
+
+  "myProfile": "My Profile",
+  "dailyGoals": "Daily Goals",
+  "recalculate": "Recalculate",
+  "recalculateGoals": "Recalculate Goals",
+  "recalculateMessage": "This will recalculate all your daily nutrition goals based on your current body info (gender, height, weight, age, activity level).\n\nAny manual edits to individual goals will be overwritten.",
+  "bodyInfo": "Body Info",
+  "preferences": "Preferences",
+  "account": "Account",
+  "darkMode": "Dark Mode",
+  "language": "Language",
+  "english": "English",
+  "arabic": "العربية",
+  "chooseLanguage": "Choose Language",
+  "exportData": "Export Data",
+  "privacyPolicy": "Privacy Policy",
+  "helpSupport": "Help & Support",
+  "dataExported": "Data exported!",
+  "exportFailed": "Export failed. Please try again.",
+
+  "gender": "Gender",
+  "male": "Male",
+  "female": "Female",
+  "height": "Height",
+  "weight": "Weight",
+  "age": "Age",
+  "activityLevel": "Activity Level",
+  "dietType": "Diet Type",
+
+  "sedentary": "Sedentary",
+  "sedentaryDesc": "Little to no exercise",
+  "light": "Light",
+  "lightDesc": "Light exercise 1-3 days/week",
+  "moderate": "Moderate",
+  "moderateDesc": "Moderate exercise 3-5 days/week",
+  "active": "Active",
+  "activeDesc": "Hard exercise 6-7 days/week",
+  "veryActive": "Very Active",
+  "veryActiveDesc": "Very hard exercise & physical job",
+
+  "omnivore": "Omnivore",
+  "omnivoreDesc": "No dietary restrictions",
+  "vegetarian": "Vegetarian",
+  "vegetarianDesc": "No meat or fish",
+  "vegan": "Vegan",
+  "veganDesc": "No animal products at all",
+  "pescatarian": "Pescatarian",
+  "pescatarianDesc": "Fish & seafood, no meat",
+
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "add": "Add",
+  "edit": "Edit",
+  "back": "Back",
+  "next": "Next",
+  "close": "Close",
+  "notSet": "Not set",
+
+  "calories": "Calories",
+  "protein": "Protein",
+  "carbs": "Carbs",
+  "fat": "Fat",
+  "fiber": "Fiber",
+  "water": "Water",
+
+  "welcomeTitle": "Welcome to Kalory Help",
+  "welcomeSubtitle": "Let's personalize your nutrition goals based on your body and lifestyle.",
+  "getStarted": "Get Started",
+  "biologicalSex": "What's your biological sex?",
+  "biologicalSexSubtitle": "This helps us calculate your basal metabolic rate.",
+  "yourMeasurements": "Your measurements",
+  "measurementsSubtitle": "We use these to estimate your daily energy needs.",
+  "ageRangeQuestion": "What's your age range?",
+  "ageRangeSubtitle": "Age affects your metabolic rate.",
+  "activityQuestion": "How active are you?",
+  "activitySubtitle": "This determines your daily calorie multiplier.",
+  "dietTypeQuestion": "What's your diet type?",
+  "dietTypeSubtitle": "This helps tailor your macro ratios. You can skip this.",
+  "yourDailyGoals": "Your Daily Goals",
+  "goalsRecommendation": "Based on your profile, here's what we recommend.",
+  "letsGo": "Let's Go!",
+  "goBack": "Go Back",
+
+  "foodName": "Food name",
+  "meal": "Meal",
+  "noFoodsFound": "No foods found for \"{query}\"",
+  "@noFoodsFound": {
+    "placeholders": {
+      "query": { "type": "String" }
+    }
+  },
+  "resultCount": "{count, plural, =0{No results} =1{1 result} other{{count} results}}",
+  "@resultCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "addedToMeal": "{food} added to {mealType}",
+  "@addedToMeal": {
+    "placeholders": {
+      "food": { "type": "String" },
+      "mealType": { "type": "String" }
+    }
+  },
+  "removed": "{item} removed",
+  "@removed": {
+    "placeholders": {
+      "item": { "type": "String" }
+    }
+  },
+  "deleted": "{item} deleted",
+  "@deleted": {
+    "placeholders": {
+      "item": { "type": "String" }
+    }
+  },
+  "addedText": "{item} added",
+  "@addedText": {
+    "placeholders": {
+      "item": { "type": "String" }
+    }
+  },
+  "failedToAdd": "Failed to add: {error}",
+  "@failedToAdd": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "failedToDelete": "Failed to delete: {error}",
+  "@failedToDelete": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "failedToRemove": "Failed to remove: {error}",
+  "@failedToRemove": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "breakfast": "Breakfast",
+  "lunch": "Lunch",
+  "dinner": "Dinner",
+  "snack": "Snack",
+  "dessert": "Dessert",
+  "all": "All",
+
+  "appVersion": "Kalory Help v1.0.0",
+
+  "goodMorning": "Good morning",
+  "goodAfternoon": "Good afternoon",
+  "goodEvening": "Good evening",
+  "kaloryHelp": "Kalory Help",
+  "toggleTheme": "Toggle theme",
+  "tipOfTheDay": "Tip of the Day",
+
+  "progressTitle": "Progress",
+  "week": "Week",
+  "month": "Month",
+  "threeMonths": "3 Months",
+  "weightTrend": "Weight Trend",
+  "noWeightData": "No weight data",
+  "weightChartLabel": "Weight trend chart showing {count} data points",
+  "@weightChartLabel": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "current": "Current",
+  "change": "Change",
+  "bmi": "BMI",
+  "underweight": "Underweight",
+  "normal": "Normal",
+  "overweight": "Overweight",
+  "obese": "Obese",
+  "na": "N/A",
+  "calorieTrends": "Calorie Trends",
+  "noCalorieData": "No calorie data",
+  "nutritionAverages": "Nutrition Averages",
+  "dailyAverageThisWeek": "Daily average this week",
+  "streaksAchievements": "STREAKS & ACHIEVEMENTS",
+  "loggingStreak": "Logging Streak",
+  "waterStreak": "Water Streak",
+  "weeklyGoalsMet": "Weekly Goals Met",
+  "daysCount": "{count} days",
+  "@daysCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "countOfFour": "{count} of 4",
+  "@countOfFour": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "faq": "Frequently Asked Questions",
+  "faqDataStoredQ": "How is my data stored?",
+  "faqDataStoredA": "All your data is stored locally on your device using Hive, a lightweight local database. Nothing is ever sent to a server. Your nutrition data never leaves your device.",
+  "faqExportQ": "Can I export my data?",
+  "faqExportA": "Yes! Go to Profile > Export Data to download a JSON file containing all your meals, water intake, weight entries, and profile information.",
+  "faqResetQ": "How do I reset my data?",
+  "faqResetA": "You can clear all your data by clearing your browser's site data for this app, or by uninstalling and reinstalling the app.",
+  "faqSyncQ": "Is my data synced anywhere?",
+  "faqSyncA": "No. Kalory Help is fully offline. There are no accounts, no cloud sync, and no remote databases. Your data exists only on this device.",
+  "aboutKaloryHelp": "About Kalory Help",
+  "version": "Version 1.0.0",
+  "aboutDescription": "Kalory Help is a privacy-first nutrition tracking app that works entirely on your device. Track meals, water intake, and weight — all without an account or internet connection.",
+
+  "privacyPolicyTitle": "Privacy Policy",
+  "lastUpdated": "Last updated: February 2026",
+  "privacyDataStaysTitle": "Your Data Stays on Your Device",
+  "privacyDataStaysBody": "Kalory Help is a fully offline nutrition tracking app. All data you enter — including meals, water intake, weight, and profile information — is stored exclusively on your device. Nothing is sent to any server.",
+  "privacyNoCollectionTitle": "No Data Collection",
+  "privacyNoCollectionBody": "We do not collect, transmit, or store any personal information. There are no user accounts, no cloud sync, and no remote databases.",
+  "privacyNoAnalyticsTitle": "No Analytics or Tracking",
+  "privacyNoAnalyticsBody": "Kalory Help does not use any analytics services, advertising SDKs, or tracking technologies. We do not track your usage patterns, location, or any other behavioral data.",
+  "privacyNoSharingTitle": "No Third-Party Sharing",
+  "privacyNoSharingBody": "Since no data leaves your device, there is nothing to share with third parties. Your nutrition data is yours alone.",
+  "privacyDeletionTitle": "Data Deletion",
+  "privacyDeletionBody": "You can delete all your data at any time by uninstalling the app or clearing the app's storage in your device settings.",
+  "privacyContactTitle": "Contact",
+  "privacyContactBody": "If you have any questions about this privacy policy, please reach out through the app store listing.",
+
+  "dayFlow": "Day Flow",
+  "mealsCount": "{count, plural, =0{No meals} =1{1 meal} other{{count} meals}}",
+  "@mealsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noMealsLoggedYet": "No meals logged yet",
+  "hydration": "Hydration",
+  "tapToAddGlass": "Tap to add a glass",
+  "waterIntake": "Water intake",
+  "glassesToday": "{current} / {goal} glasses today",
+  "@glassesToday": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "goal": { "type": "int" }
+    }
+  },
+  "remainingLabel": "remaining",
+  "overLabel": "over",
+  "kaloryScore": "Kalory Score",
+  "perfectDay": "Perfect day!",
+  "greatBalance": "Great balance!",
+  "gettingThere": "Getting there",
+  "needsAttention": "Needs attention",
+
+  "foodBanana": "Banana",
+  "foodChickenBreast": "Chicken Breast",
+  "foodRice": "Rice",
+  "foodEggs": "Eggs",
+  "foodOatmeal": "Oatmeal",
+  "foodApple": "Apple",
+  "foodYogurt": "Yogurt",
+
+  "proteinGrams": "{value}g protein",
+  "@proteinGrams": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "kcalPer100g": "{kcal} kcal / 100g",
+  "@kcalPer100g": {
+    "placeholders": {
+      "kcal": { "type": "int" }
+    }
+  },
+
+  "foodOatmealWithBerries": "Oatmeal with Berries",
+  "foodGreekYogurt": "Greek Yogurt",
+  "foodBlackCoffee": "Black Coffee",
+  "foodAlmonds10": "Almonds (10)",
+  "foodGrilledChickenSalad": "Grilled Chicken Salad",
+  "foodWholeWheatRoll": "Whole Wheat Roll",
+
+  "kcalUnit": "kcal",
+  "gramUnit": "g",
+  "cmUnit": "cm",
+  "kgUnit": "kg",
+  "glassesUnit": "glasses",
+  "yearsUnit": "years",
+
+  "catVegetables": "Vegetables",
+  "catFruit": "Fruit",
+  "catMeat": "Meat and meat products",
+  "catFish": "Fish and fish products",
+  "catCereals": "Cereals and cereal products",
+  "catNuts": "Nuts and seeds",
+  "catMilk": "Milk and milk products",
+  "catEggs": "Eggs",
+  "catBeverages": "Beverages",
+
+  "difficultyEasy": "Easy",
+  "difficultyMedium": "Medium",
+  "difficultyHard": "Hard",
+  "minuteShort": "min",
+  "servingsLabel": "servings",
+
+  "tapToEdit": "Tap to edit",
+  "stepIndicator": "Step {step} of {total}",
+  "@stepIndicator": {
+    "placeholders": {
+      "step": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "stepCurrent": ", current",
+  "stepCompleted": ", completed",
+
+  "deleteAllData": "Delete All Data",
+  "deleteAllDataTitle": "Delete All Data",
+  "deleteAllDataMessage": "This will permanently delete all your meals, water intake, weight entries, and profile data. This action cannot be undone.",
+  "deleteAllDataWarning": "Warning: This is irreversible!",
+  "deleteAllDataFinalConfirm": "Are you sure? All your data will be lost forever.",
+  "deleteAllDataConfirm": "Delete Everything",
+  "dataDeleted": "All data has been deleted"
+}

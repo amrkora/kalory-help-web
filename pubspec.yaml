@@ -1,0 +1,72 @@
+name: kalory_help
+description: A modern, responsive nutrition tracking and meal planning app
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # UI Components
+  cupertino_icons: ^1.0.6
+
+  # State Management
+  provider: ^6.1.1
+
+  # Charts & Visualization
+  fl_chart: ^1.1.1
+
+  # Local Storage
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # Utilities
+  intl: ^0.20.2
+  shared_preferences: ^2.2.2
+  uuid: ^4.3.3
+  url_launcher: ^6.3.2
+  path_provider: ^2.1.0
+  share_plus: ^12.0.1
+  flutter_secure_storage: ^10.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.3
+  flutter_native_splash: ^2.4.6
+
+flutter:
+  generate: true
+  uses-material-design: true
+
+  assets:
+    - assets/food_ar.json
+
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "web/icons/Icon-512.png"
+  adaptive_icon_background: "#4BA3C7"
+  adaptive_icon_foreground: "web/icons/Icon-512.png"
+
+flutter_native_splash:
+  color: "#4BA3C7"
+  image: "web/icons/Icon-512.png"
+  android: true
+  ios: true
