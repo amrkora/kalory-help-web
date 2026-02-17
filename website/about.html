@@ -6,10 +6,66 @@
   <title>About — Kalory Help</title>
   <meta name="description" content="Learn about Kalory Help — a privacy-first nutrition tracking app built for your device.">
   <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <link rel="manifest" href="site.webmanifest">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="canonical" href="https://kalory.help/about.html">
+  <link rel="alternate" hreflang="en" href="https://kalory.help/about.html">
+  <link rel="alternate" hreflang="ar" href="https://kalory.help/ar/about.html">
+  <link rel="alternate" hreflang="x-default" href="https://kalory.help/about.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kalory Help">
+  <meta property="og:title" content="About — Kalory Help">
+  <meta property="og:description" content="Learn about Kalory Help — a privacy-first nutrition tracking app built for your device.">
+  <meta property="og:image" content="https://kalory.help/assets/icon-512.png">
+  <meta property="og:url" content="https://kalory.help/about.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="About — Kalory Help">
+  <meta name="twitter:description" content="Learn about Kalory Help — a privacy-first nutrition tracking app built for your device.">
+  <meta name="twitter:image" content="https://kalory.help/assets/icon-512.png">
+  <script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "name": "About — Kalory Help",
+    "url": "https://kalory.help/about.html",
+    "description": "Learn about Kalory Help — a privacy-first nutrition tracking app built for your device.",
+    "isPartOf": { "@type": "WebSite", "name": "Kalory Help", "url": "https://kalory.help/" },
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How is my data stored?",
+        "acceptedAnswer": { "@type": "Answer", "text": "All your data is stored locally on your device using a lightweight local database. Nothing is ever sent to a server. Your nutrition data never leaves your device." }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I export my data?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes! Go to Profile > Export Data to download a JSON file containing all your meals, water intake, weight entries, and profile information." }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I reset my data?",
+        "acceptedAnswer": { "@type": "Answer", "text": "You can clear all your data by uninstalling and reinstalling the app, or by clearing app storage in your device settings." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my data synced anywhere?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. Kalory Help is fully offline. There are no accounts, no cloud sync, and no remote databases. Your data exists only on your device." }
+      },
+      {
+        "@type": "Question",
+        "name": "What languages are supported?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Kalory Help supports English and Arabic, including full right-to-left layout support for Arabic." }
+      },
+      {
+        "@type": "Question",
+        "name": "Does the app support dark mode?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes! Kalory Help automatically adapts to your system's dark mode preference for comfortable use day and night." }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -20,19 +76,25 @@
         <img src="assets/icon-180.png" alt="Kalory Help icon">
         Kalory Help
       </a>
-      <button class="hamburger" aria-label="Toggle menu">
+      <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
       <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="features.html">Features</a>
         <a href="privacy.html">Privacy</a>
-        <a href="about.html" class="active">About</a>
+        <a href="about.html" class="active" aria-current="page">About</a>
         <a href="index.html#download" class="btn btn-primary">Download Free</a>
+        <button class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
         <a href="ar/about.html" class="lang-toggle">عربي</a>
       </div>
     </div>
   </nav>
+
+  <main>
 
   <!-- Page Hero -->
   <section class="page-hero">
@@ -88,7 +150,7 @@
       </div>
       <div class="faq-list stagger-children">
         <div class="faq-item fade-in">
-          <button class="faq-question">
+          <button class="faq-question" aria-expanded="false">
             How is my data stored?
             <span class="faq-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
@@ -97,7 +159,7 @@
           </div>
         </div>
         <div class="faq-item fade-in">
-          <button class="faq-question">
+          <button class="faq-question" aria-expanded="false">
             Can I export my data?
             <span class="faq-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
@@ -106,7 +168,7 @@
           </div>
         </div>
         <div class="faq-item fade-in">
-          <button class="faq-question">
+          <button class="faq-question" aria-expanded="false">
             How do I reset my data?
             <span class="faq-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
@@ -115,7 +177,7 @@
           </div>
         </div>
         <div class="faq-item fade-in">
-          <button class="faq-question">
+          <button class="faq-question" aria-expanded="false">
             Is my data synced anywhere?
             <span class="faq-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
@@ -124,7 +186,7 @@
           </div>
         </div>
         <div class="faq-item fade-in">
-          <button class="faq-question">
+          <button class="faq-question" aria-expanded="false">
             What languages are supported?
             <span class="faq-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
@@ -133,7 +195,7 @@
           </div>
         </div>
         <div class="faq-item fade-in">
-          <button class="faq-question">
+          <button class="faq-question" aria-expanded="false">
             Does the app support dark mode?
             <span class="faq-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
           </button>
@@ -153,6 +215,8 @@
       <a href="index.html#download" class="btn btn-primary btn-lg">Download Free on the App Store</a>
     </div>
   </section>
+
+  </main>
 
   <!-- Footer -->
   <footer class="footer">
@@ -178,6 +242,13 @@
           <h4>Legal</h4>
           <ul>
             <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="accessibility.html">Accessibility</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:contact@kalory.help">contact@kalory.help</a></li>
           </ul>
         </div>
       </div>
