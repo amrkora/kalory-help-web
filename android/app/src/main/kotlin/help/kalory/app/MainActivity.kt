@@ -1,4 +1,4 @@
-package com.kesra.diet
+package help.kalory.app
 
 import io.flutter.embedding.android.FlutterActivity
 
