@@ -80,6 +80,135 @@ class _KaloryScoreState extends State<KaloryScore>
     return Icons.info_outline_rounded;
   }
 
+  /// Computes individual component scores (0.0–1.0) for the breakdown.
+  static ({double calories, double macros, double hydration}) _componentScores(
+      SummaryProvider summary, WaterProvider water) {
+    final calGoal = summary.caloriesGoal;
+    final calConsumed = summary.caloriesConsumed;
+    final cal = calGoal > 0
+        ? (1 - (calConsumed - calGoal).abs() / calGoal).clamp(0.0, 1.0)
+        : 0.0;
+
+    double macroScore(int consumed, int goal) {
+      if (goal <= 0) return 0.0;
+      final ratio = consumed / goal;
+      return (1 - (ratio - 1).abs()).clamp(0.0, 1.0);
+    }
+
+    final p = macroScore(summary.proteinConsumed, summary.proteinGoal);
+    final c = macroScore(summary.carbsConsumed, summary.carbsGoal);
+    final f = macroScore(summary.fatConsumed, summary.fatGoal);
+    final macros = (p + c + f) / 3;
+
+    final wGoal = water.goal;
+    final wConsumed = water.consumed;
+    final hyd = wGoal > 0 ? (wConsumed / wGoal).clamp(0.0, 1.0) : 0.0;
+
+    return (calories: cal, macros: macros, hydration: hyd);
+  }
+
+  void _showBreakdown(BuildContext context) {
+    final summary = context.read<SummaryProvider>();
+    final water = context.read<WaterProvider>();
+    final l10n = AppLocalizations.of(context)!;
+    final components = _componentScores(summary, water);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(ctx).colorScheme.surface,
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle bar
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Theme.of(ctx).colorScheme.outlineVariant,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                l10n.scoreBreakdown,
+                style: Theme.of(ctx).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+              const SizedBox(height: 20),
+              _breakdownRow(ctx, l10n.calorieAdherence, components.calories,
+                  0.40, AppColors.accent),
+              const SizedBox(height: 12),
+              _breakdownRow(ctx, l10n.macroBalance, components.macros, 0.35,
+                  AppColors.primary),
+              const SizedBox(height: 12),
+              _breakdownRow(ctx, l10n.hydration, components.hydration, 0.25,
+                  AppColors.success),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _breakdownRow(BuildContext context, String label, double value,
+      double weight, Color color) {
+    final points = (value * weight * 100).round();
+    final maxPoints = (weight * 100).round();
+
+    return Row(
+      children: [
+        Expanded(
+          flex: 3,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+              ),
+              const SizedBox(height: 4),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: value.clamp(0.0, 1.0),
+                  minHeight: 6,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.surfaceContainerHighest,
+                  valueColor: AlwaysStoppedAnimation<Color>(color),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        SizedBox(
+          width: 60,
+          child: Text(
+            '$points / $maxPoints',
+            textAlign: TextAlign.end,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final summary = context.watch<SummaryProvider>();
@@ -106,70 +235,73 @@ class _KaloryScoreState extends State<KaloryScore>
 
     return Semantics(
       label: '${l10n.kaloryScore}: $score / 100. $label',
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          child: AnimatedBuilder(
-            animation: _animation,
-            builder: (context, child) {
-              final displayScore = (score * _animation.value).round();
-              return Row(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: statusBg,
-                    borderRadius: BorderRadius.circular(14),
+      child: GestureDetector(
+        onTap: () => _showBreakdown(context),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: AnimatedBuilder(
+              animation: _animation,
+              builder: (context, child) {
+                final displayScore = (score * _animation.value).round();
+                return Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: statusBg,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(icon, color: statusColor, size: 26),
                   ),
-                  child: Icon(icon, color: statusColor, size: 26),
-                ),
-                const SizedBox(width: 16),
-                // Score number with gradient
-                ShaderMask(
-                  shaderCallback: (bounds) => LinearGradient(
-                    colors: [
-                      Theme.of(context).colorScheme.primary,
-                      AppColors.accent,
-                    ],
-                  ).createShader(bounds),
-                  child: Text(
-                    '$displayScore',
-                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          height: 1,
+                  const SizedBox(width: 16),
+                  // Score number with gradient
+                  ShaderMask(
+                    shaderCallback: (bounds) => LinearGradient(
+                      colors: [
+                        Theme.of(context).colorScheme.primary,
+                        AppColors.accent,
+                      ],
+                    ).createShader(bounds),
+                    child: Text(
+                      '$displayScore',
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            height: 1,
+                          ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.kaloryScore,
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                letterSpacing: 0.8,
+                              ),
                         ),
+                        const SizedBox(height: 2),
+                        Text(
+                          label,
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                color: statusColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.kaloryScore,
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              letterSpacing: 0.8,
-                            ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        label,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              color: statusColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
-      ),
+        ),
       ),
     );
   }

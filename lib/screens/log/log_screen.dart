@@ -145,17 +145,23 @@ class _LogScreenState extends State<LogScreen> {
     final dietType = context.read<ProfileProvider>().dietType;
     final excludedCats = _excludedCategories(dietType);
     final excludedNames = _excludedNamePattern(dietType);
-    final results = DatabaseService.foods
-        .where((f) {
-          final name = f['n'] as String;
-          final nameAr = f['n_ar'] as String? ?? '';
-          if (!name.toLowerCase().contains(q) && !nameAr.contains(q)) return false;
-          if (excludedCats.isNotEmpty && excludedCats.contains(f['c'])) return false;
-          if (excludedNames != null && excludedNames.hasMatch(name)) return false;
-          return true;
-        })
-        .take(20)
-        .toList();
+
+    // Custom foods first (more relevant)
+    final customResults = DatabaseService.customFoods.where((f) {
+      final name = (f['n'] as String?) ?? '';
+      return name.toLowerCase().contains(q);
+    });
+
+    final assetResults = DatabaseService.foods.where((f) {
+      final name = f['n'] as String;
+      final nameAr = f['n_ar'] as String? ?? '';
+      if (!name.toLowerCase().contains(q) && !nameAr.contains(q)) return false;
+      if (excludedCats.isNotEmpty && excludedCats.contains(f['c'])) return false;
+      if (excludedNames != null && excludedNames.hasMatch(name)) return false;
+      return true;
+    });
+
+    final results = [...customResults, ...assetResults].take(20).toList();
     setState(() {
       _searchResults = results;
       _searchLoading = false;
@@ -165,12 +171,15 @@ class _LogScreenState extends State<LogScreen> {
   Future<void> _addSearchResult(BuildContext context, dynamic food) async {
     final locale = Localizations.localeOf(context);
     final name = _foodName(food, locale);
-    final kcalPer100 = (food['k'] as num?)?.toDouble() ?? 0;
-    final proteinPer100 = (food['p'] as num?)?.toDouble() ?? 0;
+    final isCustom = food['custom'] == true;
+    final kcalBase = (food['k'] as num?)?.toDouble() ?? 0;
+    final proteinBase = (food['p'] as num?)?.toDouble() ?? 0;
+    final carbsBase = (food['carbs'] as num?)?.toDouble() ?? 0;
+    final fatBase = (food['fat'] as num?)?.toDouble() ?? 0;
     final category = _foodCategory(food, locale);
 
-    final servingController = TextEditingController(text: '100');
-    const presets = [50, 75, 100, 150, 200, 250];
+    final servingController = TextEditingController(text: isCustom ? '1' : '100');
+    final presets = isCustom ? [1, 2, 3] : [50, 75, 100, 150, 200, 250];
 
     final confirmed = await showModalBottomSheet<bool>(
       context: context,
@@ -180,10 +189,16 @@ class _LogScreenState extends State<LogScreen> {
       builder: (ctx) {
         return StatefulBuilder(
           builder: (ctx, setSheetState) {
-            final grams = double.tryParse(servingController.text) ?? 0;
-            final kcal = (kcalPer100 * grams / 100).round();
-            final protein = (proteinPer100 * grams / 100 * 10).round() / 10;
+            final amount = double.tryParse(servingController.text) ?? 0;
+            final kcal = isCustom
+                ? (kcalBase * amount).round()
+                : (kcalBase * amount / 100).round();
+            final protein = isCustom
+                ? (proteinBase * amount * 10).round() / 10
+                : (proteinBase * amount / 100 * 10).round() / 10;
             final mealType = _guessMealType();
+            final l10n = AppLocalizations.of(ctx)!;
+            final suffixLabel = isCustom ? l10n.servingsLabel : l10n.gramUnit;
 
             return FractionallySizedBox(
               heightFactor: 0.75,
@@ -241,7 +256,9 @@ class _LogScreenState extends State<LogScreen> {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          AppLocalizations.of(ctx)!.kcalPer100g(kcalPer100.toInt()),
+                          isCustom
+                              ? l10n.kcalPerServing(kcalBase.toInt())
+                              : l10n.kcalPer100g(kcalBase.toInt()),
                           style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
                                 color: Theme.of(ctx).colorScheme.onSurfaceVariant,
                               ),
@@ -252,7 +269,7 @@ class _LogScreenState extends State<LogScreen> {
 
                     // Serving presets
                     Text(
-                      AppLocalizations.of(ctx)!.servingSize,
+                      l10n.servingSize,
                       style: Theme.of(ctx).textTheme.labelMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
@@ -264,7 +281,7 @@ class _LogScreenState extends State<LogScreen> {
                       children: presets.map((g) {
                         final selected = servingController.text == g.toString();
                         return ChoiceChip(
-                          label: Text('$g${AppLocalizations.of(ctx)!.gramUnit}'),
+                          label: Text('$g $suffixLabel'),
                           selected: selected,
                           selectedColor: AppColors.primaryContainer,
                           labelStyle: TextStyle(
@@ -289,8 +306,8 @@ class _LogScreenState extends State<LogScreen> {
                         controller: servingController,
                         decoration: InputDecoration(
                           isDense: true,
-                          hintText: AppLocalizations.of(ctx)!.customAmount,
-                          suffixText: AppLocalizations.of(context)!.gramUnit,
+                          hintText: l10n.customAmount,
+                          suffixText: suffixLabel,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -329,7 +346,7 @@ class _LogScreenState extends State<LogScreen> {
                                         color: AppColors.accent,
                                       ),
                                 ),
-                                Text(AppLocalizations.of(ctx)!.kcalUnit,
+                                Text(l10n.kcalUnit,
                                     style: Theme.of(ctx).textTheme.labelSmall?.copyWith(
                                           color: Theme.of(ctx).colorScheme.onSurfaceVariant,
                                         )),
@@ -345,13 +362,13 @@ class _LogScreenState extends State<LogScreen> {
                             child: Column(
                               children: [
                                 Text(
-                                  '$protein${AppLocalizations.of(ctx)!.gramUnit}',
+                                  '$protein${l10n.gramUnit}',
                                   style: Theme.of(ctx).textTheme.headlineSmall?.copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: AppColors.primary,
                                       ),
                                 ),
-                                Text(AppLocalizations.of(ctx)!.protein.toLowerCase(),
+                                Text(l10n.protein.toLowerCase(),
                                     style: Theme.of(ctx).textTheme.labelSmall?.copyWith(
                                           color: Theme.of(ctx).colorScheme.onSurfaceVariant,
                                         )),
@@ -368,9 +385,9 @@ class _LogScreenState extends State<LogScreen> {
                       width: double.infinity,
                       height: 50,
                       child: FilledButton.icon(
-                        onPressed: grams > 0 ? () => Navigator.pop(ctx, true) : null,
+                        onPressed: amount > 0 ? () => Navigator.pop(ctx, true) : null,
                         icon: const Icon(Icons.add_rounded),
-                        label: Text(AppLocalizations.of(ctx)!.addTo(_localizedMealType(AppLocalizations.of(ctx)!, mealType))),
+                        label: Text(l10n.addTo(_localizedMealType(l10n, mealType))),
                         style: FilledButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.white,
@@ -396,14 +413,28 @@ class _LogScreenState extends State<LogScreen> {
 
     if (confirmed != true || !context.mounted) return;
 
-    final grams = double.tryParse(servingController.text) ?? 100;
-    final kcal = (kcalPer100 * grams / 100).round();
-    final protein = (proteinPer100 * grams / 100 * 10).round() / 10;
+    final amount = double.tryParse(servingController.text) ?? (isCustom ? 1 : 100);
+    final kcal = isCustom
+        ? (kcalBase * amount).round()
+        : (kcalBase * amount / 100).round();
+    final protein = isCustom
+        ? (proteinBase * amount * 10).round() / 10
+        : (proteinBase * amount / 100 * 10).round() / 10;
+    final carbs = isCustom
+        ? (carbsBase * amount * 10).round() / 10
+        : (carbsBase * amount / 100 * 10).round() / 10;
+    final fat = isCustom
+        ? (fatBase * amount * 10).round() / 10
+        : (fatBase * amount / 100 * 10).round() / 10;
 
     final mealsProvider = context.read<MealsProvider>();
     final summaryProvider = context.read<SummaryProvider>();
     final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
     final mealType = _guessMealType();
+
+    final displayName = isCustom
+        ? (amount == 1 ? name : '$name (x${amount.toInt()})')
+        : '$name (${amount.toInt()}g)';
 
     try {
       final matches = mealsProvider.meals.where((m) => m['meal_type'] == mealType);
@@ -421,11 +452,11 @@ class _LogScreenState extends State<LogScreen> {
       }
 
       await mealsProvider.addFoodItem(mealId, {
-        'name': '$name (${grams.toInt()}g)',
+        'name': displayName,
         'calories': kcal,
         'protein': protein,
-        'carbs': 0,
-        'fat': 0,
+        'carbs': carbs,
+        'fat': fat,
       });
 
       await summaryProvider.load();
@@ -569,113 +600,196 @@ class _LogScreenState extends State<LogScreen> {
         ? _mealTypeKeys[_selectedMealType + 1]
         : _guessMealType();
 
-    final result = await showDialog<bool>(
+    final result = await showModalBottomSheet<bool>(
       context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialogState) => AlertDialog(
-          title: Text(l10n.addFood),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Meal type selector
-                DropdownButtonFormField<String>(
-                  initialValue: dialogMealType,
-                  decoration: InputDecoration(labelText: l10n.meal),
-                  items: ['Breakfast', 'Lunch', 'Dinner', 'Snack']
-                      .map((t) => DropdownMenuItem(value: t, child: Text(_localizedMealType(l10n, t))))
-                      .toList(),
-                  onChanged: (v) =>
-                      setDialogState(() => dialogMealType = v ?? dialogMealType),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(labelText: l10n.foodName),
-                  textCapitalization: TextCapitalization.words,
-                  autofocus: true,
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: caloriesController,
-                  decoration: InputDecoration(
-                    labelText: l10n.calories,
-                    suffixText: l10n.kcalUnit,
-                  ),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(4),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setSheetState) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Theme.of(ctx).colorScheme.surface,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(ctx).viewInsets.bottom,
+              ),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: TextField(
-                        controller: proteinController,
-                        decoration: InputDecoration(
-                          labelText: l10n.protein,
-                          suffixText: AppLocalizations.of(context)!.gramUnit,
+                    // Handle bar
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Theme.of(ctx).colorScheme.outlineVariant,
+                          borderRadius: BorderRadius.circular(2),
                         ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(3),
-                        ],
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextField(
-                        controller: carbsController,
-                        decoration: InputDecoration(
-                          labelText: l10n.carbs,
-                          suffixText: AppLocalizations.of(context)!.gramUnit,
-                        ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(3),
-                        ],
-                      ),
+                    const SizedBox(height: 20),
+
+                    // Title
+                    Text(
+                      l10n.addFood,
+                      style: Theme.of(ctx).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextField(
-                        controller: fatController,
-                        decoration: InputDecoration(
-                          labelText: l10n.fat,
-                          suffixText: AppLocalizations.of(context)!.gramUnit,
+                    const SizedBox(height: 16),
+
+                    // Meal type selector
+                    DropdownButtonFormField<String>(
+                      value: dialogMealType,
+                      decoration: InputDecoration(
+                        labelText: l10n.meal,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(3),
-                        ],
+                      ),
+                      items: ['Breakfast', 'Lunch', 'Dinner', 'Snack']
+                          .map((t) => DropdownMenuItem(value: t, child: Text(_localizedMealType(l10n, t))))
+                          .toList(),
+                      onChanged: (v) =>
+                          setSheetState(() => dialogMealType = v ?? dialogMealType),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Food name
+                    TextField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                        labelText: l10n.foodName,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      textCapitalization: TextCapitalization.words,
+                      autofocus: true,
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Calories (full width)
+                    TextField(
+                      controller: caloriesController,
+                      decoration: InputDecoration(
+                        labelText: l10n.calories,
+                        suffixText: l10n.kcalUnit,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(4),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Macros — 2-column grid
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: proteinController,
+                            decoration: InputDecoration(
+                              labelText: l10n.protein,
+                              suffixText: l10n.gramUnit,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(3),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: TextField(
+                            controller: carbsController,
+                            decoration: InputDecoration(
+                              labelText: l10n.carbs,
+                              suffixText: l10n.gramUnit,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(3),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: fatController,
+                            decoration: InputDecoration(
+                              labelText: l10n.fat,
+                              suffixText: l10n.gramUnit,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(3),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(child: SizedBox()),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Add button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: FilledButton.icon(
+                        onPressed: () {
+                          if (nameController.text.trim().isEmpty) return;
+                          if ((int.tryParse(caloriesController.text) ?? 0) <= 0) return;
+                          Navigator.pop(ctx, true);
+                        },
+                        icon: const Icon(Icons.add_rounded),
+                        label: Text(l10n.addTo(_localizedMealType(l10n, dialogMealType))),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(l10n.cancel),
-            ),
-            FilledButton(
-              onPressed: () {
-                if (nameController.text.trim().isEmpty) return;
-                if ((int.tryParse(caloriesController.text) ?? 0) <= 0) return;
-                Navigator.pop(ctx, true);
-              },
-              child: Text(l10n.add),
-            ),
-          ],
-        ),
-      ),
+              ),
+            );
+          },
+        );
+      },
     );
 
     if (result != true || !context.mounted) return;
@@ -700,20 +814,34 @@ class _LogScreenState extends State<LogScreen> {
         mealId = newMatches.first['id'];
       }
 
+      final foodName = nameController.text.trim();
+      final cal = int.tryParse(caloriesController.text) ?? 0;
+      final prot = int.tryParse(proteinController.text) ?? 0;
+      final carb = int.tryParse(carbsController.text) ?? 0;
+      final f = int.tryParse(fatController.text) ?? 0;
+
       await mealsProvider.addFoodItem(mealId, {
-        'name': nameController.text.trim(),
-        'calories': int.tryParse(caloriesController.text) ?? 0,
-        'protein': int.tryParse(proteinController.text) ?? 0,
-        'carbs': int.tryParse(carbsController.text) ?? 0,
-        'fat': int.tryParse(fatController.text) ?? 0,
+        'name': foodName,
+        'calories': cal,
+        'protein': prot,
+        'carbs': carb,
+        'fat': f,
       });
+
+      await DatabaseService.saveCustomFood(
+        name: foodName,
+        calories: cal,
+        protein: prot,
+        carbs: carb,
+        fat: f,
+      );
 
       await summaryProvider.load();
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.addedToMeal(nameController.text.trim(), _localizedMealType(AppLocalizations.of(context)!, dialogMealType))),
+            content: Text(AppLocalizations.of(context)!.addedToMeal(foodName, _localizedMealType(AppLocalizations.of(context)!, dialogMealType))),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -978,9 +1106,16 @@ class _LogScreenState extends State<LogScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          AppLocalizations.of(context)!.todaysLog,
-          style: Theme.of(context).textTheme.headlineMedium,
+        ShaderMask(
+          shaderCallback: (bounds) =>
+              AppColors.primaryGradient.createShader(bounds),
+          child: Text(
+            AppLocalizations.of(context)!.todaysLog,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+          ),
         ),
         const SizedBox(height: 4),
         Text(
@@ -1336,101 +1471,177 @@ class _LogScreenState extends State<LogScreen> {
     final carbsController = TextEditingController();
     final fatController = TextEditingController();
     final l10n = AppLocalizations.of(context)!;
+    final mealType = meal['meal_type'] ?? '';
 
-    final result = await showDialog<bool>(
+    final result = await showModalBottomSheet<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('${l10n.addItem} - ${_localizedMealType(l10n, meal['meal_type'] ?? '')}'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(labelText: l10n.foodName),
-                textCapitalization: TextCapitalization.words,
-                autofocus: true,
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: caloriesController,
-                decoration: InputDecoration(
-                  labelText: l10n.calories,
-                  suffixText: l10n.kcalUnit,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(ctx).colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(ctx).viewInsets.bottom,
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Handle bar
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Theme.of(ctx).colorScheme.outlineVariant,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
                 ),
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(4),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: proteinController,
-                      decoration: InputDecoration(
-                        labelText: l10n.protein,
-                        suffixText: l10n.gramUnit,
+                const SizedBox(height: 20),
+
+                // Title
+                Text(
+                  '${l10n.addItem} - ${_localizedMealType(l10n, mealType)}',
+                  style: Theme.of(ctx).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(3),
-                      ],
+                ),
+                const SizedBox(height: 16),
+
+                // Food name
+                TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: l10n.foodName,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      controller: carbsController,
-                      decoration: InputDecoration(
-                        labelText: l10n.carbs,
-                        suffixText: l10n.gramUnit,
-                      ),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(3),
-                      ],
+                  textCapitalization: TextCapitalization.words,
+                  autofocus: true,
+                ),
+                const SizedBox(height: 12),
+
+                // Calories (full width)
+                TextField(
+                  controller: caloriesController,
+                  decoration: InputDecoration(
+                    labelText: l10n.calories,
+                    suffixText: l10n.kcalUnit,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      controller: fatController,
-                      decoration: InputDecoration(
-                        labelText: l10n.fat,
-                        suffixText: l10n.gramUnit,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(4),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // Macros — 2-column grid
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: proteinController,
+                        decoration: InputDecoration(
+                          labelText: l10n.protein,
+                          suffixText: l10n.gramUnit,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(3),
+                        ],
                       ),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(3),
-                      ],
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextField(
+                        controller: carbsController,
+                        decoration: InputDecoration(
+                          labelText: l10n.carbs,
+                          suffixText: l10n.gramUnit,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(3),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: fatController,
+                        decoration: InputDecoration(
+                          labelText: l10n.fat,
+                          suffixText: l10n.gramUnit,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(3),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(child: SizedBox()),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                // Add button
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: FilledButton.icon(
+                    onPressed: () {
+                      if (nameController.text.trim().isEmpty) return;
+                      if ((int.tryParse(caloriesController.text) ?? 0) <= 0) return;
+                      Navigator.pop(ctx, true);
+                    },
+                    icon: const Icon(Icons.add_rounded),
+                    label: Text(l10n.addTo(_localizedMealType(l10n, mealType))),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              if (nameController.text.trim().isEmpty) return;
-              if ((int.tryParse(caloriesController.text) ?? 0) <= 0) return;
-              Navigator.pop(ctx, true);
-            },
-            child: Text(l10n.add),
-          ),
-        ],
-      ),
+        );
+      },
     );
 
     if (result != true || !context.mounted) return;
@@ -1438,19 +1649,34 @@ class _LogScreenState extends State<LogScreen> {
     final mealsProvider = context.read<MealsProvider>();
     final summaryProvider = context.read<SummaryProvider>();
     try {
+      final foodName = nameController.text.trim();
+      final cal = int.tryParse(caloriesController.text) ?? 0;
+      final prot = int.tryParse(proteinController.text) ?? 0;
+      final carb = int.tryParse(carbsController.text) ?? 0;
+      final f = int.tryParse(fatController.text) ?? 0;
+
       await mealsProvider.addFoodItem(meal['id'], {
-        'name': nameController.text.trim(),
-        'calories': int.tryParse(caloriesController.text) ?? 0,
-        'protein': int.tryParse(proteinController.text) ?? 0,
-        'carbs': int.tryParse(carbsController.text) ?? 0,
-        'fat': int.tryParse(fatController.text) ?? 0,
+        'name': foodName,
+        'calories': cal,
+        'protein': prot,
+        'carbs': carb,
+        'fat': f,
       });
+
+      await DatabaseService.saveCustomFood(
+        name: foodName,
+        calories: cal,
+        protein: prot,
+        carbs: carb,
+        fat: f,
+      );
+
       await summaryProvider.load();
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.addedText(nameController.text.trim())),
+            content: Text(AppLocalizations.of(context)!.addedText(foodName)),
             behavior: SnackBarBehavior.floating,
           ),
         );

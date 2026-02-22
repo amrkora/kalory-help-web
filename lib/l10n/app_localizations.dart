@@ -527,7 +527,7 @@ abstract class AppLocalizations {
   /// No description provided for @omnivore.
   ///
   /// In en, this message translates to:
-  /// **'Omnivore'**
+  /// **'Flexible'**
   String get omnivore;
 
   /// No description provided for @omnivoreDesc.
@@ -1274,6 +1274,24 @@ abstract class AppLocalizations {
   /// **'Kalory Score'**
   String get kaloryScore;
 
+  /// No description provided for @scoreBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Score Breakdown'**
+  String get scoreBreakdown;
+
+  /// No description provided for @calorieAdherence.
+  ///
+  /// In en, this message translates to:
+  /// **'Calorie Adherence'**
+  String get calorieAdherence;
+
+  /// No description provided for @macroBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Macro Balance'**
+  String get macroBalance;
+
   /// No description provided for @perfectDay.
   ///
   /// In en, this message translates to:
@@ -1351,6 +1369,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{kcal} kcal / 100g'**
   String kcalPer100g(int kcal);
+
+  /// No description provided for @kcalPerServing.
+  ///
+  /// In en, this message translates to:
+  /// **'{kcal} kcal / serving'**
+  String kcalPerServing(int kcal);
 
   /// No description provided for @foodOatmealWithBerries.
   ///

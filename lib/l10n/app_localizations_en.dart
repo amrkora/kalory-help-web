@@ -233,7 +233,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get veryActiveDesc => 'Very hard exercise & physical job';
 
   @override
-  String get omnivore => 'Omnivore';
+  String get omnivore => 'Flexible';
 
   @override
   String get omnivoreDesc => 'No dietary restrictions';
@@ -667,6 +667,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kaloryScore => 'Kalory Score';
 
   @override
+  String get scoreBreakdown => 'Score Breakdown';
+
+  @override
+  String get calorieAdherence => 'Calorie Adherence';
+
+  @override
+  String get macroBalance => 'Macro Balance';
+
+  @override
   String get perfectDay => 'Perfect day!';
 
   @override
@@ -707,6 +716,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String kcalPer100g(int kcal) {
     return '$kcal kcal / 100g';
+  }
+
+  @override
+  String kcalPerServing(int kcal) {
+    return '$kcal kcal / serving';
   }
 
   @override

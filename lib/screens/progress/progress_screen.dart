@@ -147,9 +147,16 @@ class _ProgressScreenState extends State<ProgressScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.progressTitle,
-          style: Theme.of(context).textTheme.headlineMedium,
+        ShaderMask(
+          shaderCallback: (bounds) =>
+              AppColors.primaryGradient.createShader(bounds),
+          child: Text(
+            l10n.progressTitle,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+          ),
         ),
         const SizedBox(height: 12),
         Row(

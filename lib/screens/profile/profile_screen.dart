@@ -45,13 +45,11 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildMobileLayout(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AnimatedEntrance(
-          child: _buildProfileHeader(context),
-        ),
+        _buildHeader(context),
         const SizedBox(height: 24),
         AnimatedEntrance(
-          delay: const Duration(milliseconds: 100),
           child: _buildDailyGoals(context),
         ),
         const SizedBox(height: 16),
@@ -78,10 +76,9 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildDesktopLayout(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AnimatedEntrance(
-          child: _buildProfileHeader(context),
-        ),
+        _buildHeader(context),
         const SizedBox(height: 24),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,33 +123,21 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundColor: Colors.white.withValues(alpha: 0.2),
-            child: const Icon(Icons.person, size: 40, color: Colors.white),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            AppLocalizations.of(context)!.myProfile,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-        ],
+  Widget _buildHeader(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return ShaderMask(
+      shaderCallback: (bounds) =>
+          AppColors.primaryGradient.createShader(bounds),
+      child: Text(
+        l10n.myProfile,
+        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
       ),
     );
   }
+
 
   // ── Daily Goals ──────────────────────────────────────────────────────
 

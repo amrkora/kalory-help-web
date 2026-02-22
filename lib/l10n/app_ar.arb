@@ -78,13 +78,13 @@
   "veryActive": "نشيط جداً",
   "veryActiveDesc": "تمارين شاقة جداً ووظيفة بدنية",
 
-  "omnivore": "آكل اللحوم",
+  "omnivore": "مرن",
   "omnivoreDesc": "بدون قيود غذائية",
   "vegetarian": "نباتي",
   "vegetarianDesc": "بدون لحوم أو أسماك",
   "vegan": "نباتي صرف",
   "veganDesc": "بدون منتجات حيوانية",
-  "pescatarian": "بيسكاتاري",
+  "pescatarian": "نباتي يأكل السمك",
   "pescatarianDesc": "أسماك ومأكولات بحرية، بدون لحوم",
 
   "save": "حفظ",
@@ -146,7 +146,7 @@
   "goodMorning": "صباح الخير",
   "goodAfternoon": "مساء الخير",
   "goodEvening": "مساء الخير",
-  "kaloryHelp": "مساعدة كالوري",
+  "kaloryHelp": "كالوري",
   "toggleTheme": "تبديل المظهر",
   "tipOfTheDay": "نصيحة اليوم",
 
@@ -214,6 +214,9 @@
   "remainingLabel": "متبقي",
   "overLabel": "زائد",
   "kaloryScore": "نقاط مساعدة كالوري",
+  "scoreBreakdown": "تفاصيل النقاط",
+  "calorieAdherence": "الالتزام بالسعرات",
+  "macroBalance": "توازن العناصر الغذائية",
   "perfectDay": "يوم مثالي!",
   "greatBalance": "توازن رائع!",
   "gettingThere": "في الطريق الصحيح",
@@ -229,6 +232,7 @@
 
   "proteinGrams": "{value}جم بروتين",
   "kcalPer100g": "{kcal} سعرة حرارية / 100جم",
+  "kcalPerServing": "{kcal} سعرة حرارية / حصة",
 
   "foodOatmealWithBerries": "شوفان بالتوت",
   "foodGreekYogurt": "زبادي يوناني",

@@ -233,7 +233,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get veryActiveDesc => 'تمارين شاقة جداً ووظيفة بدنية';
 
   @override
-  String get omnivore => 'آكل اللحوم';
+  String get omnivore => 'مرن';
 
   @override
   String get omnivoreDesc => 'بدون قيود غذائية';
@@ -251,7 +251,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get veganDesc => 'بدون منتجات حيوانية';
 
   @override
-  String get pescatarian => 'بيسكاتاري';
+  String get pescatarian => 'نباتي يأكل السمك';
 
   @override
   String get pescatarianDesc => 'أسماك ومأكولات بحرية، بدون لحوم';
@@ -447,7 +447,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get goodEvening => 'مساء الخير';
 
   @override
-  String get kaloryHelp => 'مساعدة كالوري';
+  String get kaloryHelp => 'كالوري';
 
   @override
   String get toggleTheme => 'تبديل المظهر';
@@ -670,6 +670,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get kaloryScore => 'نقاط مساعدة كالوري';
 
   @override
+  String get scoreBreakdown => 'تفاصيل النقاط';
+
+  @override
+  String get calorieAdherence => 'الالتزام بالسعرات';
+
+  @override
+  String get macroBalance => 'توازن العناصر الغذائية';
+
+  @override
   String get perfectDay => 'يوم مثالي!';
 
   @override
@@ -710,6 +719,11 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String kcalPer100g(int kcal) {
     return '$kcal سعرة حرارية / 100جم';
+  }
+
+  @override
+  String kcalPerServing(int kcal) {
+    return '$kcal سعرة حرارية / حصة';
   }
 
   @override

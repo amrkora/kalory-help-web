@@ -103,7 +103,7 @@
   "veryActive": "Very Active",
   "veryActiveDesc": "Very hard exercise & physical job",
 
-  "omnivore": "Omnivore",
+  "omnivore": "Flexible",
   "omnivoreDesc": "No dietary restrictions",
   "vegetarian": "Vegetarian",
   "vegetarianDesc": "No meat or fish",
@@ -311,6 +311,9 @@
   "remainingLabel": "remaining",
   "overLabel": "over",
   "kaloryScore": "Kalory Score",
+  "scoreBreakdown": "Score Breakdown",
+  "calorieAdherence": "Calorie Adherence",
+  "macroBalance": "Macro Balance",
   "perfectDay": "Perfect day!",
   "greatBalance": "Great balance!",
   "gettingThere": "Getting there",
@@ -332,6 +335,12 @@
   },
   "kcalPer100g": "{kcal} kcal / 100g",
   "@kcalPer100g": {
+    "placeholders": {
+      "kcal": { "type": "int" }
+    }
+  },
+  "kcalPerServing": "{kcal} kcal / serving",
+  "@kcalPerServing": {
     "placeholders": {
       "kcal": { "type": "int" }
     }

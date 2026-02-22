@@ -16,6 +16,9 @@ class DatabaseService {
   /// In-memory food database loaded from asset (read-only, not stored in Hive).
   static List<Map<String, dynamic>> foods = [];
 
+  /// In-memory list of user-created custom foods (persisted in foodsBox).
+  static List<Map<String, dynamic>> customFoods = [];
+
   static const _secureStorage = FlutterSecureStorage();
   static const _keyName = 'hive_encryption_key';
 
@@ -72,12 +75,40 @@ class DatabaseService {
     }
 
     await _loadFoodsAsset();
+    _loadCustomFoods();
   }
 
   static Future<void> _loadFoodsAsset() async {
     final jsonStr = await rootBundle.loadString('assets/food_ar.json');
     final List<dynamic> raw = json.decode(jsonStr);
     foods = raw.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+  }
+
+  static void _loadCustomFoods() {
+    customFoods = foodsBox.keys
+        .map((key) => Map<String, dynamic>.from(foodsBox.get(key) as Map))
+        .toList();
+  }
+
+  static Future<void> saveCustomFood({
+    required String name,
+    required int calories,
+    required int protein,
+    required int carbs,
+    required int fat,
+  }) async {
+    final entry = {
+      'n': name,
+      'k': calories,
+      'p': protein,
+      'carbs': carbs,
+      'fat': fat,
+      'c': 'Custom',
+      'c_ar': 'مخصص',
+      'custom': true,
+    };
+    await foodsBox.put(name.toLowerCase().trim(), entry);
+    _loadCustomFoods();
   }
 
   static Future<void> _seed() async {
@@ -106,6 +137,8 @@ class DatabaseService {
     await profileBox.put('profile', Map<String, dynamic>.from(seedProfile));
     await profileBox.put('goals', Map<String, dynamic>.from(seedGoals));
     await profileBox.put('preferences', Map<String, dynamic>.from(seedPreferences));
+    await foodsBox.clear();
+    customFoods = [];
     await profileBox.delete('onboarding_completed');
   }
 }
