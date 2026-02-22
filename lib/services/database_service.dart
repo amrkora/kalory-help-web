@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -19,43 +20,88 @@ class DatabaseService {
   /// In-memory list of user-created custom foods (persisted in foodsBox).
   static List<Map<String, dynamic>> customFoods = [];
 
-  static const _secureStorage = FlutterSecureStorage();
-  static const _keyName = 'hive_encryption_key';
+  static const _storage = FlutterSecureStorage();
+  static const _encKeyName = 'profile_box_key';
 
-  static Future<List<int>> _getEncryptionKey() async {
-    final stored = await _secureStorage.read(key: _keyName);
-    if (stored != null) {
-      return base64Url.decode(stored);
+  /// Returns the 256-bit encryption key for the profile box, creating one if
+  /// it doesn't exist yet.
+  static Future<Uint8List> _getEncryptionKey() async {
+    final existing = await _storage.read(key: _encKeyName);
+    if (existing != null) {
+      return base64Url.decode(existing);
     }
     final key = Hive.generateSecureKey();
-    await _secureStorage.write(key: _keyName, value: base64Url.encode(key));
-    return key;
+    await _storage.write(key: _encKeyName, value: base64Url.encode(key));
+    return Uint8List.fromList(key);
   }
 
-  /// Opens a Hive box with encryption. If the box was previously unencrypted,
-  /// deletes it and re-creates as encrypted (seed data will be re-populated).
-  static Future<Box> _openEncryptedBox(
-      String name, HiveAesCipher cipher) async {
+  /// Opens a regular (unencrypted) Hive box, deleting & recreating on error.
+  static Future<Box> _openBox(String name) async {
     try {
-      return await Hive.openBox(name, encryptionCipher: cipher);
+      return await Hive.openBox(name);
     } catch (_) {
       await Hive.deleteBoxFromDisk(name);
-      return await Hive.openBox(name, encryptionCipher: cipher);
+      return await Hive.openBox(name);
     }
+  }
+
+  /// Opens the profile box with AES encryption. Migrates existing unencrypted
+  /// data on first run.
+  static Future<Box> _openEncryptedProfileBox(Uint8List key) async {
+    final cipher = HiveAesCipher(key);
+
+    // Try opening as encrypted first (normal path after migration).
+    try {
+      return await Hive.openBox('profile', encryptionCipher: cipher);
+    } catch (_) {
+      // Box exists but is unencrypted — migrate.
+    }
+
+    // Read existing unencrypted data.
+    Map<dynamic, dynamic> existing = {};
+    try {
+      final plain = await Hive.openBox('profile');
+      existing = plain.toMap();
+      await plain.close();
+    } catch (_) {
+      // Corrupted — will be re-seeded.
+    }
+
+    await Hive.deleteBoxFromDisk('profile');
+    final encrypted = await Hive.openBox('profile', encryptionCipher: cipher);
+
+    // Restore data into the encrypted box.
+    if (existing.isNotEmpty) {
+      for (final entry in existing.entries) {
+        await encrypted.put(entry.key, entry.value);
+      }
+    }
+
+    return encrypted;
   }
 
   static Future<void> initialize() async {
     await Hive.initFlutter();
 
-    final key = await _getEncryptionKey();
-    final cipher = HiveAesCipher(key);
+    final encKey = await _getEncryptionKey();
 
-    mealsBox = await _openEncryptedBox('meals', cipher);
-    waterBox = await _openEncryptedBox('water', cipher);
-    recipesBox = await _openEncryptedBox('recipes', cipher);
-    profileBox = await _openEncryptedBox('profile', cipher);
-    weightBox = await _openEncryptedBox('weight', cipher);
-    foodsBox = await _openEncryptedBox('foods', cipher);
+    // Open all boxes and load the food asset in parallel.
+    final results = await Future.wait([
+      _openBox('meals'),                  // 0
+      _openBox('water'),                  // 1
+      _openBox('recipes'),                // 2
+      _openEncryptedProfileBox(encKey),   // 3
+      _openBox('weight'),                 // 4
+      _openBox('foods'),                  // 5
+      _loadFoodsAsset(),                  // 6 (returns null)
+    ]);
+
+    mealsBox = results[0] as Box;
+    waterBox = results[1] as Box;
+    recipesBox = results[2] as Box;
+    profileBox = results[3] as Box;
+    weightBox = results[4] as Box;
+    foodsBox = results[5] as Box;
 
     if (profileBox.get('seeded') != true) {
       await _seed();
@@ -74,7 +120,6 @@ class DatabaseService {
       await profileBox.put('recipes_version', 9);
     }
 
-    await _loadFoodsAsset();
     _loadCustomFoods();
   }
 
