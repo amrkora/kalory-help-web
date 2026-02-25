@@ -3,29 +3,17 @@ import '../services/database_service.dart';
 import '../utils/date_helpers.dart';
 
 class ProgressProvider extends ChangeNotifier {
-  Map<String, dynamic>? _weightData;
   List<dynamic> _calorieData = [];
   List<dynamic> _nutritionData = [];
   List<dynamic> _streaks = [];
   bool _loading = false;
   String? _error;
 
-  Map<String, dynamic>? get weightData => _weightData;
-  List<dynamic> get weightEntries =>
-      (_weightData?['entries'] as List<dynamic>?) ?? [];
-  Map<String, dynamic>? get weightStats => _weightData?['stats'];
-
   List<dynamic> get calorieData => _calorieData;
   List<dynamic> get nutritionData => _nutritionData;
   List<dynamic> get streaks => _streaks;
   bool get loading => _loading;
   String? get error => _error;
-
-  double? get currentWeight =>
-      (weightStats?['current'] as num?)?.toDouble();
-  double? get weightChange =>
-      (weightStats?['change'] as num?)?.toDouble();
-  double? get bmi => (weightStats?['bmi'] as num?)?.toDouble();
 
   String periodParam(int index) {
     switch (index) {
@@ -73,9 +61,6 @@ class ProgressProvider extends ChangeNotifier {
       final now = DateTime.now();
       final mealIndex = _indexMealsByDate();
 
-      // Weight data
-      _weightData = _buildWeightData(days, now);
-
       // Calorie data
       _calorieData = _buildCalorieData(days, now, mealIndex);
 
@@ -89,48 +74,6 @@ class ProgressProvider extends ChangeNotifier {
     }
     _loading = false;
     notifyListeners();
-  }
-
-  Map<String, dynamic> _buildWeightData(int days, DateTime now) {
-    final entries = <Map<String, dynamic>>[];
-    final weightBox = DatabaseService.weightBox;
-
-    for (int i = days - 1; i >= 0; i--) {
-      final date = _dateString(now.subtract(Duration(days: i)));
-      final raw = weightBox.get(date);
-      if (raw != null) {
-        entries.add(Map<String, dynamic>.from(raw as Map));
-      }
-    }
-
-    double? current;
-    double? change;
-    double? bmiVal;
-
-    if (entries.isNotEmpty) {
-      current = (entries.last['weight'] as num).toDouble();
-      if (entries.length > 1) {
-        change = current - (entries.first['weight'] as num).toDouble();
-      }
-      // Calculate BMI using profile height
-      final profileRaw = DatabaseService.profileBox.get('profile');
-      if (profileRaw != null) {
-        final heightCm = (profileRaw as Map)['height'] as num?;
-        if (heightCm != null && heightCm > 0) {
-          final heightM = heightCm / 100;
-          bmiVal = current / (heightM * heightM);
-        }
-      }
-    }
-
-    return {
-      'entries': entries,
-      'stats': {
-        'current': current,
-        'change': change,
-        'bmi': bmiVal != null ? double.parse(bmiVal.toStringAsFixed(1)) : null,
-      },
-    };
   }
 
   List<Map<String, dynamic>> _buildCalorieData(int days, DateTime now, Map<String, List<Map>> mealIndex) {

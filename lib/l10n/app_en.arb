@@ -268,12 +268,12 @@
   "faqExportQ": "Can I export my data?",
   "faqExportA": "Yes! Go to Profile > Export Data to download a JSON file containing all your meals, water intake, weight entries, and profile information.",
   "faqResetQ": "How do I reset my data?",
-  "faqResetA": "You can clear all your data by clearing your browser's site data for this app, or by uninstalling and reinstalling the app.",
+  "faqResetA": "You can clear all your data using the \"Delete All Data\" option in Profile > Settings, or by uninstalling and reinstalling the app.",
   "faqSyncQ": "Is my data synced anywhere?",
   "faqSyncA": "No. Kalory Help is fully offline. There are no accounts, no cloud sync, and no remote databases. Your data exists only on this device.",
   "aboutKaloryHelp": "About Kalory Help",
   "version": "Version 1.0.0",
-  "aboutDescription": "Kalory Help is a privacy-first nutrition tracking app that works entirely on your device. Track meals, water intake, and weight — all without an account or internet connection.",
+  "aboutDescription": "Kalory Help is a privacy-first nutrition tracking app that works entirely on your device. Track meals, water intake, and weight — all without an account or internet connection.\n\nDisclaimer: This app is for informational purposes only and is not a substitute for professional medical or nutritional advice.",
 
   "privacyPolicyTitle": "Privacy Policy",
   "lastUpdated": "Last updated: February 2026",
@@ -286,7 +286,7 @@
   "privacyNoSharingTitle": "No Third-Party Sharing",
   "privacyNoSharingBody": "Since no data leaves your device, there is nothing to share with third parties. Your nutrition data is yours alone.",
   "privacyDeletionTitle": "Data Deletion",
-  "privacyDeletionBody": "You can delete all your data at any time by uninstalling the app or clearing the app's storage in your device settings.",
+  "privacyDeletionBody": "You can delete all your data at any time using the \"Delete All Data\" option in Profile > Settings, or by uninstalling the app. Once deleted, data cannot be recovered — because we never had a copy.",
   "privacyContactTitle": "Contact",
   "privacyContactBody": "If you have any questions about this privacy policy, please reach out through the app store listing.",
 

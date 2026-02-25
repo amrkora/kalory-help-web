@@ -1097,7 +1097,7 @@ abstract class AppLocalizations {
   /// No description provided for @faqResetA.
   ///
   /// In en, this message translates to:
-  /// **'You can clear all your data by clearing your browser\'s site data for this app, or by uninstalling and reinstalling the app.'**
+  /// **'You can clear all your data using the \"Delete All Data\" option in Profile > Settings, or by uninstalling and reinstalling the app.'**
   String get faqResetA;
 
   /// No description provided for @faqSyncQ.
@@ -1127,7 +1127,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutDescription.
   ///
   /// In en, this message translates to:
-  /// **'Kalory Help is a privacy-first nutrition tracking app that works entirely on your device. Track meals, water intake, and weight — all without an account or internet connection.'**
+  /// **'Kalory Help is a privacy-first nutrition tracking app that works entirely on your device. Track meals, water intake, and weight — all without an account or internet connection.\n\nDisclaimer: This app is for informational purposes only and is not a substitute for professional medical or nutritional advice.'**
   String get aboutDescription;
 
   /// No description provided for @privacyPolicyTitle.
@@ -1199,7 +1199,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyDeletionBody.
   ///
   /// In en, this message translates to:
-  /// **'You can delete all your data at any time by uninstalling the app or clearing the app\'s storage in your device settings.'**
+  /// **'You can delete all your data at any time using the \"Delete All Data\" option in Profile > Settings, or by uninstalling the app. Once deleted, data cannot be recovered — because we never had a copy.'**
   String get privacyDeletionBody;
 
   /// No description provided for @privacyContactTitle.

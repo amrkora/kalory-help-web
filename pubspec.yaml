@@ -18,9 +18,6 @@ dependencies:
   # State Management
   provider: ^6.1.1
 
-  # Charts & Visualization
-  fl_chart: ^1.1.1
-
   # Local Storage
   hive: ^2.2.3
   hive_flutter: ^1.1.0

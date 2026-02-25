@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import '../../theme/app_theme.dart';
 import '../../providers/progress_provider.dart';
@@ -68,26 +67,16 @@ class _ProgressScreenState extends State<ProgressScreen> {
     return Column(
       children: [
         AnimatedEntrance(
-          child: _buildWeightChart(context),
-        ),
-        const SizedBox(height: 24),
-        AnimatedEntrance(
-          delay: const Duration(milliseconds: 100),
-          child: _buildStatsRow(context),
-        ),
-        const SizedBox(height: 24),
-        AnimatedEntrance(
-          delay: const Duration(milliseconds: 200),
           child: _buildCalorieTrends(context),
         ),
         const SizedBox(height: 24),
         AnimatedEntrance(
-          delay: const Duration(milliseconds: 300),
+          delay: const Duration(milliseconds: 100),
           child: _buildNutritionAverages(context),
         ),
         const SizedBox(height: 24),
         AnimatedEntrance(
-          delay: const Duration(milliseconds: 400),
+          delay: const Duration(milliseconds: 200),
           child: _buildStreaksCard(context),
         ),
       ],
@@ -97,10 +86,6 @@ class _ProgressScreenState extends State<ProgressScreen> {
   Widget _buildTabletLayout(BuildContext context) {
     return Column(
       children: [
-        _buildWeightChart(context),
-        const SizedBox(height: 24),
-        _buildStatsRow(context),
-        const SizedBox(height: 24),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -121,22 +106,13 @@ class _ProgressScreenState extends State<ProgressScreen> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(flex: 3, child: _buildWeightChart(context)),
-            const SizedBox(width: 24),
-            Expanded(flex: 2, child: _buildStreaksCard(context)),
-          ],
-        ),
-        const SizedBox(height: 24),
-        _buildStatsRow(context),
-        const SizedBox(height: 24),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
             Expanded(child: _buildCalorieTrends(context)),
             const SizedBox(width: 24),
             Expanded(child: _buildNutritionAverages(context)),
           ],
         ),
+        const SizedBox(height: 24),
+        _buildStreaksCard(context),
       ],
     );
   }
@@ -186,284 +162,6 @@ class _ProgressScreenState extends State<ProgressScreen> {
           }),
         ),
       ],
-    );
-  }
-
-  Widget _buildWeightChart(BuildContext context) {
-    final progress = context.watch<ProgressProvider>();
-    final entries = progress.weightEntries;
-
-    if (entries.isEmpty) {
-      final l10n = AppLocalizations.of(context)!;
-      return Card(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Center(
-            child: Text(l10n.noWeightData,
-                style: Theme.of(context).textTheme.bodyLarge),
-          ),
-        ),
-      );
-    }
-
-    final weightData = entries
-        .map<double>((e) => (e['weight'] as num).toDouble())
-        .toList();
-    final locale = Localizations.localeOf(context).languageCode;
-    final dates = entries.map<String>((e) {
-      final date = DateTime.parse(e['date']);
-      return DateFormat('E', locale).format(date);
-    }).toList();
-
-    final minW = weightData.reduce((a, b) => a < b ? a : b) - 0.5;
-    final maxW = weightData.reduce((a, b) => a > b ? a : b) + 0.5;
-
-    final l10n = AppLocalizations.of(context)!;
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.weightTrend,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-            ),
-            const SizedBox(height: 24),
-            Semantics(
-              label: l10n.weightChartLabel(weightData.length),
-              child: SizedBox(
-                height: 200,
-                child: LineChart(
-                LineChartData(
-                  gridData: FlGridData(
-                    show: true,
-                    drawVerticalLine: false,
-                    horizontalInterval: 0.5,
-                    getDrawingHorizontalLine: (value) => FlLine(
-                      color: Theme.of(context).colorScheme.outlineVariant,
-                      strokeWidth: 1,
-                    ),
-                  ),
-                  titlesData: FlTitlesData(
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 40,
-                        interval: 0.5,
-                        getTitlesWidget: (value, meta) => Text(
-                          value.toStringAsFixed(1),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
-                              ),
-                        ),
-                      ),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (value, meta) {
-                          final index = value.toInt();
-                          if (index >= 0 && index < dates.length) {
-                            return Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Text(
-                                dates[index],
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant,
-                                    ),
-                              ),
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                    ),
-                    topTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false)),
-                    rightTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false)),
-                  ),
-                  borderData: FlBorderData(show: false),
-                  minY: minW,
-                  maxY: maxW,
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: List.generate(
-                        weightData.length,
-                        (i) => FlSpot(i.toDouble(), weightData[i]),
-                      ),
-                      isCurved: true,
-                      gradient: AppColors.primaryGradient,
-                      barWidth: 3,
-                      dotData: FlDotData(
-                        show: true,
-                        getDotPainter: (spot, percent, barData, index) =>
-                            FlDotCirclePainter(
-                          radius: 4,
-                          color: AppColors.primary,
-                          strokeWidth: 2,
-                          strokeColor: Colors.white,
-                        ),
-                      ),
-                      belowBarData: BarAreaData(
-                        show: true,
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.primary.withValues(alpha: 0.2),
-                            AppColors.secondary.withValues(alpha: 0.05),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatsRow(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final progress = context.watch<ProgressProvider>();
-    final current = progress.currentWeight;
-    final change = progress.weightChange;
-    final bmi = progress.bmi;
-
-    String bmiLabel = l10n.na;
-    if (bmi != null) {
-      if (bmi < 18.5) {
-        bmiLabel = l10n.underweight;
-      } else if (bmi < 25) {
-        bmiLabel = l10n.normal;
-      } else if (bmi < 30) {
-        bmiLabel = l10n.overweight;
-      } else {
-        bmiLabel = l10n.obese;
-      }
-    }
-
-    return Row(
-      children: [
-        Expanded(
-          child: _buildStatCard(
-            context,
-            label: l10n.current,
-            value: current?.toStringAsFixed(1) ?? '--',
-            unit: l10n.kgUnit,
-            icon: Icons.monitor_weight_outlined,
-            color: AppColors.primary,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildStatCard(
-            context,
-            label: l10n.change,
-            value: change != null ? '${change > 0 ? '+' : ''}${change.toStringAsFixed(1)}' : '--',
-            unit: l10n.kgUnit,
-            icon: change != null && change < 0
-                ? Icons.trending_down
-                : Icons.trending_up,
-            color: change != null && change <= 0
-                ? AppColors.success
-                : AppColors.warning,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildStatCard(
-            context,
-            label: l10n.bmi,
-            value: bmi?.toStringAsFixed(1) ?? '--',
-            unit: bmiLabel,
-            icon: Icons.speed,
-            color: AppColors.secondary,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatCard(
-    BuildContext context, {
-    required String label,
-    required String value,
-    required String unit,
-    required IconData icon,
-    required Color color,
-  }) {
-    // Try to parse value as double for count-up animation
-    final numericValue = double.tryParse(value.replaceAll('+', ''));
-    final isNumeric = numericValue != null && value != '--';
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Icon(icon, color: color, size: 28),
-            const SizedBox(height: 8),
-            if (isNumeric)
-              TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0, end: numericValue),
-                duration: const Duration(milliseconds: 600),
-                curve: Curves.easeOutCubic,
-                builder: (context, animVal, child) {
-                  final prefix = value.startsWith('+') ? '+' : '';
-                  return Text(
-                    '$prefix${animVal.toStringAsFixed(1)}',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: color,
-                        ),
-                  );
-                },
-              )
-            else
-              Text(
-                value,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: color,
-                    ),
-              ),
-            const SizedBox(height: 2),
-            Text(
-              unit,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 

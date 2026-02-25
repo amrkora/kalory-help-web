@@ -959,16 +959,14 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildDarkModeRow(BuildContext context, AppLocalizations l10n) {
     final themeProvider = context.watch<ThemeProvider>();
-    final isDark = themeProvider.themeMode == ThemeMode.dark;
-    final isSystem = themeProvider.themeMode == ThemeMode.system;
+    // When mode is "system", reflect the device's actual brightness.
+    final isDark = themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
+            MediaQuery.platformBrightnessOf(context) == Brightness.dark);
 
     return InkWell(
       onTap: () {
-        if (isSystem || !isDark) {
-          themeProvider.setThemeMode(ThemeMode.dark);
-        } else {
-          themeProvider.setThemeMode(ThemeMode.light);
-        }
+        themeProvider.setThemeMode(isDark ? ThemeMode.light : ThemeMode.dark);
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12),

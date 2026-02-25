@@ -21,7 +21,7 @@ Calorie & Nutrition Tracker
 
 Track your nutrition, hydration, and meals — all without giving up your privacy.
 
-Kalory Help is a beautifully designed calorie and nutrition tracker that works 100% offline. No accounts, no subscriptions, no data collection. Just open the app and start tracking.
+Kalory Help is a beautifully designed calorie and nutrition tracker. All core features — tracking, goals, and progress — work 100% offline. No accounts, no subscriptions, no data collection. Just open the app and start tracking.
 
 CALORIE & MACRO TRACKING
 • Log meals with calories, protein, carbs, and fat
@@ -47,8 +47,8 @@ DISCOVER RECIPES
 • Supports Flexible, Vegetarian, Vegan, and Pescatarian diets
 
 PROGRESS & INSIGHTS
-• Weight trend charts over weeks and months
 • Calorie intake history and daily averages
+• Daily nutrition averages for protein, carbs, and fat
 • Kalory Score — a daily rating based on your calorie adherence, macro balance, and hydration
 • Logging and hydration streaks
 
@@ -67,13 +67,15 @@ BEAUTIFUL DESIGN
 
 Kalory Help is completely free with no hidden costs or premium tiers. Your health data stays on your device — always.
 
+Disclaimer: This app is for informational purposes only and is not a substitute for professional medical or nutritional advice.
+
 ## Keywords
 
 calorie,nutrition,tracker,food,diet,macro,protein,hydration,water,meal,health,fitness,weight,offline
 
 ## Promotional Text
 
-Track calories, macros, and water intake with complete privacy. No accounts, no ads, no data collection. 100% free and offline.
+Track calories, macros, and water intake with complete privacy. No accounts, no ads, no data collection. 100% free. Core features work fully offline.
 
 ## Support URL
 
@@ -86,3 +88,4 @@ https://kalory.help/privacy.html
 ## Copyright
 
 2026 Kalory Help
+
