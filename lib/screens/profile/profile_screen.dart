@@ -14,6 +14,7 @@ import '../../widgets/animated_entrance.dart';
 import '../../l10n/app_localizations.dart';
 import '../privacy/privacy_policy_screen.dart';
 import '../help/help_support_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -945,6 +946,12 @@ class ProfileScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (_) => const HelpSupportScreen()),
+                    )),
+            const Divider(height: 1),
+            _buildAccountRow(
+                context, Icons.feedback_outlined, l10n.sendFeedback,
+                onTap: () => launchUrl(
+                      Uri.parse('mailto:contact@kalory.help?subject=Kalory Help Feedback'),
                     )),
             const Divider(height: 1),
             _buildAccountRow(

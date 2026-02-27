@@ -623,7 +623,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyContactBody =>
-      'If you have any questions about this privacy policy, please reach out through the app store listing.';
+      'If you have any questions about this privacy policy, please contact us at contact@kalory.help.';
 
   @override
   String get dayFlow => 'Day Flow';
@@ -814,6 +814,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stepCompleted => ', completed';
+
+  @override
+  String get sendFeedback => 'Send Feedback';
 
   @override
   String get deleteAllData => 'Delete All Data';

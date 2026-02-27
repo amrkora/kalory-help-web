@@ -623,7 +623,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get privacyContactBody =>
-      'إذا كان لديك أي أسئلة حول سياسة الخصوصية هذه، يرجى التواصل عبر صفحة التطبيق في المتجر.';
+      'إذا كان لديك أي أسئلة حول سياسة الخصوصية هذه، يرجى التواصل معنا على contact@kalory.help.';
 
   @override
   String get dayFlow => 'تدفق اليوم';
@@ -817,6 +817,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get stepCompleted => '، مكتملة';
+
+  @override
+  String get sendFeedback => 'إرسال ملاحظات';
 
   @override
   String get deleteAllData => 'حذف جميع البيانات';

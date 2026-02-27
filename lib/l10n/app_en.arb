@@ -288,7 +288,7 @@
   "privacyDeletionTitle": "Data Deletion",
   "privacyDeletionBody": "You can delete all your data at any time using the \"Delete All Data\" option in Profile > Settings, or by uninstalling the app. Once deleted, data cannot be recovered — because we never had a copy.",
   "privacyContactTitle": "Contact",
-  "privacyContactBody": "If you have any questions about this privacy policy, please reach out through the app store listing.",
+  "privacyContactBody": "If you have any questions about this privacy policy, please contact us at contact@kalory.help.",
 
   "dayFlow": "Day Flow",
   "mealsCount": "{count, plural, =0{No meals} =1{1 meal} other{{count} meals}}",
@@ -387,6 +387,7 @@
   "stepCurrent": ", current",
   "stepCompleted": ", completed",
 
+  "sendFeedback": "Send Feedback",
   "deleteAllData": "Delete All Data",
   "deleteAllDataTitle": "Delete All Data",
   "deleteAllDataMessage": "This will permanently delete all your meals, water intake, weight entries, and profile data. This action cannot be undone.",

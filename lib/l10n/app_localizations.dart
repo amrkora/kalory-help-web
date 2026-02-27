@@ -1211,7 +1211,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyContactBody.
   ///
   /// In en, this message translates to:
-  /// **'If you have any questions about this privacy policy, please reach out through the app store listing.'**
+  /// **'If you have any questions about this privacy policy, please contact us at contact@kalory.help.'**
   String get privacyContactBody;
 
   /// No description provided for @dayFlow.
@@ -1555,6 +1555,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **', completed'**
   String get stepCompleted;
+
+  /// No description provided for @sendFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Feedback'**
+  String get sendFeedback;
 
   /// No description provided for @deleteAllData.
   ///
