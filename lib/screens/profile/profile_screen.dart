@@ -952,6 +952,7 @@ class ProfileScreen extends StatelessWidget {
                 context, Icons.feedback_outlined, l10n.sendFeedback,
                 onTap: () => launchUrl(
                       Uri.parse('mailto:contact@kalory.help?subject=Kalory Help Feedback'),
+                      mode: LaunchMode.externalApplication,
                     )),
             const Divider(height: 1),
             _buildAccountRow(
