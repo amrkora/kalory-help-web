@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
@@ -14,7 +15,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  late final VideoPlayerController _controller;
+  VideoPlayerController? _controller;
   bool _navigated = false;
   bool _videoDone = false;
   bool _dbReady = false;
@@ -26,7 +27,6 @@ class _SplashScreenState extends State<SplashScreen> {
     // Start DB initialization in background.
     DatabaseService.initialize().then((_) {
       _dbReady = true;
-      // Reload theme now that profileBox is available.
       if (mounted) {
         context.read<ThemeProvider>().loadFromDb();
       }
@@ -37,24 +37,29 @@ class _SplashScreenState extends State<SplashScreen> {
       _tryNavigate();
     });
 
-    // Start video playback.
-    _controller = VideoPlayerController.asset('assets/splash.mp4');
-    _controller.initialize().then((_) {
-      if (mounted) {
-        _controller.setVolume(0);
-        setState(() {});
-        _controller.play();
-      }
-    }).catchError((e) {
-      debugPrint('Video initialization failed: $e');
+    if (kIsWeb) {
+      // Web: show static logo, auto-navigate after DB is ready.
       _videoDone = true;
-      _tryNavigate();
-    });
-    _controller.addListener(_onVideoUpdate);
+    } else {
+      // Mobile: play splash video.
+      _controller = VideoPlayerController.asset('assets/splash.mp4');
+      _controller!.initialize().then((_) {
+        if (mounted) {
+          _controller!.setVolume(0);
+          setState(() {});
+          _controller!.play();
+        }
+      }).catchError((e) {
+        debugPrint('Video initialization failed: $e');
+        _videoDone = true;
+        _tryNavigate();
+      });
+      _controller!.addListener(_onVideoUpdate);
+    }
   }
 
   void _onVideoUpdate() {
-    if (_controller.value.isCompleted) {
+    if (_controller != null && _controller!.value.isCompleted) {
       _videoDone = true;
       _tryNavigate();
     }
@@ -87,26 +92,45 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void dispose() {
-    _controller.removeListener(_onVideoUpdate);
-    _controller.dispose();
+    if (_controller != null) {
+      _controller!.removeListener(_onVideoUpdate);
+      _controller!.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb) {
+      return Scaffold(
+        backgroundColor: const Color(0xFF4BA3C7),
+        body: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: _skip,
+          child: Center(
+            child: Image.asset(
+              'assets/icon-512.png',
+              width: 128,
+              height: 128,
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: _skip,
-        child: _controller.value.isInitialized
+        child: _controller != null && _controller!.value.isInitialized
             ? SizedBox.expand(
                 child: FittedBox(
                   fit: BoxFit.cover,
                   child: SizedBox(
-                    width: _controller.value.size.width,
-                    height: _controller.value.size.height,
-                    child: VideoPlayer(_controller),
+                    width: _controller!.value.size.width,
+                    height: _controller!.value.size.height,
+                    child: VideoPlayer(_controller!),
                   ),
                 ),
               )

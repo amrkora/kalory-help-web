@@ -50,6 +50,7 @@ flutter:
     - assets/food_ar.json
     - assets/food.db
     - assets/splash.mp4
+    - assets/icon-512.png
 
   fonts:
     - family: Inter
