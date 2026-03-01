@@ -103,7 +103,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     if (kIsWeb) {
       return Scaffold(
-        backgroundColor: const Color(0xFF4BA3C7),
+        backgroundColor: const Color(0xFFF5F1EB),
         body: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: _skip,
