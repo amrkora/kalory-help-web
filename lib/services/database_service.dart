@@ -1,21 +1,20 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../data/seed_recipes.dart';
 import '../data/seed_data.dart' show seedProfile, seedGoals, seedPreferences;
+import 'food_database.dart';
 
 class DatabaseService {
+  static bool isInitialized = false;
+
   static late Box mealsBox;
   static late Box waterBox;
   static late Box recipesBox;
   static late Box profileBox;
   static late Box weightBox;
   static late Box foodsBox;
-
-  /// In-memory food database loaded from asset (read-only, not stored in Hive).
-  static List<Map<String, dynamic>> foods = [];
 
   /// In-memory list of user-created custom foods (persisted in foodsBox).
   static List<Map<String, dynamic>> customFoods = [];
@@ -80,9 +79,12 @@ class DatabaseService {
     return encrypted;
   }
 
-  static Future<void> initialize() async {
+  /// Call once from main() before runApp(). Fast — just resolves a directory.
+  static Future<void> initHive() async {
     await Hive.initFlutter();
+  }
 
+  static Future<void> initialize() async {
     final encKey = await _getEncryptionKey();
 
     // Open all boxes and load the food asset in parallel.
@@ -93,7 +95,7 @@ class DatabaseService {
       _openEncryptedProfileBox(encKey),   // 3
       _openBox('weight'),                 // 4
       _openBox('foods'),                  // 5
-      _loadFoodsAsset(),                  // 6 (returns null)
+      FoodDatabase.initialize(),          // 6 (returns null)
     ]);
 
     mealsBox = results[0] as Box;
@@ -121,12 +123,7 @@ class DatabaseService {
     }
 
     _loadCustomFoods();
-  }
-
-  static Future<void> _loadFoodsAsset() async {
-    final jsonStr = await rootBundle.loadString('assets/food_ar.json');
-    final List<dynamic> raw = json.decode(jsonStr);
-    foods = raw.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+    isInitialized = true;
   }
 
   static void _loadCustomFoods() {

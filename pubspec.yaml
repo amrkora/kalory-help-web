@@ -1,7 +1,7 @@
 name: kalory_help
 description: A modern, responsive nutrition tracking and meal planning app
 publish_to: 'none'
-version: 1.0.0+1
+version: 2.0.0+2
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -23,6 +23,9 @@ dependencies:
   hive_flutter: ^1.1.0
   flutter_secure_storage: ^9.2.4
 
+  # Database
+  sqflite: ^2.3.0
+
   # Utilities
   intl: ^0.20.2
   shared_preferences: ^2.2.2
@@ -30,6 +33,7 @@ dependencies:
   url_launcher: ^6.3.2
   path_provider: ^2.1.0
   share_plus: ^12.0.1
+  video_player: ^2.11.0
 
 dev_dependencies:
   flutter_test:
@@ -44,6 +48,8 @@ flutter:
 
   assets:
     - assets/food_ar.json
+    - assets/food.db
+    - assets/splash.mp4
 
   fonts:
     - family: Inter
@@ -64,6 +70,5 @@ flutter_launcher_icons:
 
 flutter_native_splash:
   color: "#4BA3C7"
-  image: "web/icons/Icon-512.png"
   android: true
   ios: true

@@ -4,7 +4,7 @@ import '../../theme/app_theme.dart';
 import '../../utils/nutrition_calculator.dart';
 import '../../providers/profile_provider.dart';
 import '../../l10n/app_localizations.dart';
-import '../../main.dart';
+import '../navigation/main_navigation_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -24,6 +24,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   String? _ageRange;
   String? _activityLevel;
   String? _dietType;
+  bool _halalMode = true;
 
   static const _totalSteps = 7;
 
@@ -81,6 +82,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       'activity_level': _activityLevel,
     };
     if (_dietType != null) profileData['diet_type'] = _dietType;
+    profileData['halal_mode'] = _halalMode;
     await profile.updateProfile(profileData);
 
     final goals = NutritionCalculator.calculateAllGoals(
@@ -460,66 +462,116 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       title: l10n.dietTypeQuestion,
       subtitle: l10n.dietTypeSubtitle,
       content: Column(
-        children: diets.map((diet) {
-          final selected = _dietType == diet.key;
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Material(
-              color: selected
-                  ? Theme.of(context).colorScheme.primaryContainer
-                  : Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(14),
-              child: InkWell(
+        children: [
+          ...diets.map((diet) {
+            final selected = _dietType == diet.key;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Material(
+                color: selected
+                    ? Theme.of(context).colorScheme.primaryContainer
+                    : Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(14),
-                onTap: () => setState(() => _dietType = diet.key),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Icon(
-                        diet.icon,
-                        color: selected
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.onSurfaceVariant,
-                        size: 28,
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              diet.label,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall
-                                  ?.copyWith(fontWeight: FontWeight.w600),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              diet.description,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant,
-                                  ),
-                            ),
-                          ],
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(14),
+                  onTap: () => setState(() => _dietType = diet.key),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Icon(
+                          diet.icon,
+                          color: selected
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.onSurfaceVariant,
+                          size: 28,
                         ),
-                      ),
-                      if (selected)
-                        Icon(Icons.check_circle,
-                            color: Theme.of(context).colorScheme.primary),
-                    ],
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                diet.label,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleSmall
+                                    ?.copyWith(fontWeight: FontWeight.w600),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                diet.description,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (selected)
+                          Icon(Icons.check_circle,
+                              color: Theme.of(context).colorScheme.primary),
+                      ],
+                    ),
                   ),
                 ),
               ),
+            );
+          }),
+          const SizedBox(height: 8),
+          Material(
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(14),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.mosque,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    size: 28,
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.halal,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          l10n.halalDesc,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Switch(
+                    value: _halalMode,
+                    onChanged: (value) => setState(() => _halalMode = value),
+                  ),
+                ],
+              ),
             ),
-          );
-        }).toList(),
+          ),
+        ],
       ),
     );
   }

@@ -60,12 +60,15 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   static const _fishKw = r'\b(?:fish|salmon|tuna|cod|prawn|prawns|shrimp|crab|lobster|anchovy|anchovies|mackerel|sardine|trout|haddock|herring|squid)\b';
   static const _dairyKw = r'\b(?:cheese|milk|yogurt|yoghurt|cream|ghee|whey|cottage)\b';
   static const _eggKw = r'\beggs?\b';
+  static const _porkKw = r'\b(?:pork|bacon|ham|lard|suet|tallow|dripping|pancetta|prosciutto|salami|pepperoni|chorizo)\b';
+  static const _alcoholKw = r'\b(?:wine|beer|ale|vodka|whiskey|whisky|rum|gin|tequila|brandy|champagne|cocktail|liqueur|liquor|bourbon|sake|mead|cider|sangria|prosecco|martini|margarita|mojito|absinthe|vermouth|aperol|spritz)\b';
 
   static final _veganFilter = RegExp('$_meatKw|$_fishKw|$_dairyKw|$_eggKw', caseSensitive: false);
   static final _vegetarianFilter = RegExp('$_meatKw|$_fishKw', caseSensitive: false);
   static final _pescatarianFilter = RegExp(_meatKw, caseSensitive: false);
+  static final _halalFilter = RegExp('$_porkKw|$_alcoholKw', caseSensitive: false);
 
-  List<dynamic> _filterByDiet(List<dynamic> recipes, String? dietType) {
+  List<dynamic> _filterByDiet(List<dynamic> recipes, String? dietType, {bool halalMode = false}) {
     RegExp? pattern;
     switch (dietType) {
       case 'vegan':
@@ -78,8 +81,14 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         pattern = _pescatarianFilter;
         break;
       default:
-        return recipes;
+        break;
     }
+    if (halalMode) {
+      pattern = pattern != null
+          ? RegExp('${pattern.pattern}|${_porkKw}|${_alcoholKw}', caseSensitive: false)
+          : _halalFilter;
+    }
+    if (pattern == null) return recipes;
     return recipes.where((r) => !pattern!.hasMatch((r['name'] ?? '').toString())).toList();
   }
 
@@ -650,8 +659,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   // ─── Header ───
   Widget _buildHeader(BuildContext context) {
     final recipesProvider = context.watch<RecipesProvider>();
-    final dietType = context.watch<ProfileProvider>().dietType;
-    final total = _filterByDiet(recipesProvider.recipes, dietType).length;
+    final profile = context.watch<ProfileProvider>();
+    final dietType = profile.dietType;
+    final halalMode = profile.halalMode;
+    final total = _filterByDiet(recipesProvider.recipes, dietType, halalMode: halalMode).length;
     final l10n = AppLocalizations.of(context)!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -777,8 +788,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   // ─── Featured section ───
   Widget _buildFeaturedSection(BuildContext context) {
     final recipesProvider = context.watch<RecipesProvider>();
-    final dietType = context.watch<ProfileProvider>().dietType;
-    final featured = _filterByDiet(recipesProvider.featured, dietType);
+    final profile = context.watch<ProfileProvider>();
+    final dietType = profile.dietType;
+    final halalMode = profile.halalMode;
+    final featured = _filterByDiet(recipesProvider.featured, dietType, halalMode: halalMode);
     if (featured.isEmpty) return const SizedBox.shrink();
 
     final recipe = featured[0];
@@ -961,8 +974,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   // ─── All recipes (list-style cards) ───
   Widget _buildAllRecipes(BuildContext context) {
     final recipesProvider = context.watch<RecipesProvider>();
-    final dietType = context.watch<ProfileProvider>().dietType;
-    final all = _filterByDiet(recipesProvider.recipes, dietType);
+    final profile = context.watch<ProfileProvider>();
+    final dietType = profile.dietType;
+    final halalMode = profile.halalMode;
+    final all = _filterByDiet(recipesProvider.recipes, dietType, halalMode: halalMode);
     final l10n = AppLocalizations.of(context)!;
 
     return Column(

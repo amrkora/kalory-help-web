@@ -572,6 +572,18 @@ abstract class AppLocalizations {
   /// **'Fish & seafood, no meat'**
   String get pescatarianDesc;
 
+  /// No description provided for @halal.
+  ///
+  /// In en, this message translates to:
+  /// **'Halal'**
+  String get halal;
+
+  /// No description provided for @halalDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters out pork, lard & alcohol. Not a halal certification.'**
+  String get halalDesc;
+
   /// No description provided for @save.
   ///
   /// In en, this message translates to:
@@ -869,7 +881,7 @@ abstract class AppLocalizations {
   /// No description provided for @appVersion.
   ///
   /// In en, this message translates to:
-  /// **'Kalory Help v1.0.0'**
+  /// **'Kalory Help v2.0.0'**
   String get appVersion;
 
   /// No description provided for @goodMorning.

@@ -5,7 +5,14 @@ class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
 
   ThemeProvider() {
+    if (DatabaseService.isInitialized) {
+      _loadFromStorage();
+    }
+  }
+
+  void loadFromDb() {
     _loadFromStorage();
+    notifyListeners();
   }
 
   ThemeMode get themeMode => _themeMode;

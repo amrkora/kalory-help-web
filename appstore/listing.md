@@ -25,7 +25,7 @@ Kalory Help is a beautifully designed calorie and nutrition tracker. All core fe
 
 CALORIE & MACRO TRACKING
 • Log meals with calories, protein, carbs, and fat
-• Search hundreds of foods from a built-in database
+• Search over 450,000 foods from a built-in database
 • Save custom foods for quick reuse
 • Quick-add common foods with one tap
 • View daily totals vs. your personal goals
@@ -68,6 +68,13 @@ BEAUTIFUL DESIGN
 Kalory Help is completely free with no hidden costs or premium tiers. Your health data stays on your device — always.
 
 Disclaimer: This app is for informational purposes only and is not a substitute for professional medical or nutritional advice.
+
+## What's New (v2.0.0)
+
+- Massive food database expansion — now over 450,000 food items
+- New animated splash screen on every launch
+- Faster app startup — database loads in the background
+- Removed static splash logo for a smoother launch experience
 
 ## Keywords
 

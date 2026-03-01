@@ -257,6 +257,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pescatarianDesc => 'أسماك ومأكولات بحرية، بدون لحوم';
 
   @override
+  String get halal => 'حلال';
+
+  @override
+  String get halalDesc =>
+      'يستبعد لحم الخنزير والشحم الحيواني والكحول. ليس شهادة حلال.';
+
+  @override
   String get save => 'حفظ';
 
   @override
@@ -435,7 +442,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get all => 'الكل';
 
   @override
-  String get appVersion => 'مساعدة كالوري الإصدار 1.0.0';
+  String get appVersion => 'مساعدة كالوري الإصدار 2.0.0';
 
   @override
   String get goodMorning => 'صباح الخير';

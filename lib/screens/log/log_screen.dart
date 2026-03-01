@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import '../../providers/meals_provider.dart';
 import '../../providers/profile_provider.dart';
 import '../../providers/summary_provider.dart';
 import '../../services/database_service.dart';
+import '../../services/food_database.dart';
 import '../../widgets/animated_entrance.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/localized_helpers.dart' as helpers;
@@ -28,6 +30,7 @@ class _LogScreenState extends State<LogScreen> {
   final _searchController = TextEditingController();
   List<dynamic> _searchResults = [];
   bool _searchLoading = false;
+  Timer? _searchDebounce;
 
   static const Map<String, Map<String, dynamic>> _quickFoodData = {
     'Banana': {'calories': 105, 'protein': 1, 'carbs': 27, 'fat': 0},
@@ -63,6 +66,8 @@ class _LogScreenState extends State<LogScreen> {
   static const _fishKeywords = r'\b(?:fish|salmon|tuna|cod|prawn|prawns|shrimp|crab|lobster|anchovy|anchovies|mackerel|sardine|trout|haddock|herring|squid)\b';
   static const _dairyKeywords = r'\b(?:cheese|milk|yogurt|yoghurt|cream|ghee|whey)\b';
   static const _eggKeywords = r'\beggs?\b';
+  static const _porkKeywords = r'\b(?:pork|bacon|ham|lard|suet|tallow|dripping|pancetta|prosciutto|salami|pepperoni|chorizo)\b';
+  static const _alcoholKeywords = r'\b(?:wine|beer|ale|vodka|whiskey|whisky|rum|gin|tequila|brandy|champagne|cocktail|liqueur|liquor|bourbon|sake|mead|cider|sangria|prosecco|martini|margarita|mojito|absinthe|vermouth|aperol|spritz)\b';
 
   static final _veganNameFilter = RegExp(
     '$_meatKeywords|$_fishKeywords|$_dairyKeywords|$_eggKeywords',
@@ -74,6 +79,10 @@ class _LogScreenState extends State<LogScreen> {
   );
   static final _pescatarianNameFilter = RegExp(
     _meatKeywords,
+    caseSensitive: false,
+  );
+  static final _halalNameFilter = RegExp(
+    '$_porkKeywords|$_alcoholKeywords',
     caseSensitive: false,
   );
 
@@ -129,11 +138,14 @@ class _LogScreenState extends State<LogScreen> {
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
 
-  void _searchFoods(String query) {
+  void _searchFoods(String query, {bool immediate = false}) {
+    _searchDebounce?.cancel();
+
     if (query.trim().isEmpty) {
       setState(() {
         _searchResults = [];
@@ -141,29 +153,51 @@ class _LogScreenState extends State<LogScreen> {
       });
       return;
     }
+
+    setState(() => _searchLoading = true);
+
+    if (immediate) {
+      _performSearch(query);
+    } else {
+      _searchDebounce = Timer(
+        const Duration(milliseconds: 300),
+        () => _performSearch(query),
+      );
+    }
+  }
+
+  Future<void> _performSearch(String query) async {
     final q = query.toLowerCase();
-    final dietType = context.read<ProfileProvider>().dietType;
+    final profile = context.read<ProfileProvider>();
+    final dietType = profile.dietType;
+    final halalMode = profile.halalMode;
     final excludedCats = _excludedCategories(dietType);
-    final excludedNames = _excludedNamePattern(dietType);
+    if (halalMode) excludedCats.add('Alcoholic beverages');
+    var excludedNames = _excludedNamePattern(dietType);
+    if (halalMode) {
+      excludedNames = excludedNames != null
+          ? RegExp('${excludedNames.pattern}|$_porkKeywords|$_alcoholKeywords', caseSensitive: false)
+          : _halalNameFilter;
+    }
 
     // Custom foods first (more relevant)
     final customResults = DatabaseService.customFoods.where((f) {
       final name = (f['n'] as String?) ?? '';
       return name.toLowerCase().contains(q);
-    });
+    }).toList();
 
-    final assetResults = DatabaseService.foods.where((f) {
-      final name = f['n'] as String;
-      final nameAr = f['n_ar'] as String? ?? '';
-      if (!name.toLowerCase().contains(q) && !nameAr.contains(q)) return false;
-      if (excludedCats.isNotEmpty && excludedCats.contains(f['c'])) return false;
-      if (excludedNames != null && excludedNames.hasMatch(name)) return false;
-      return true;
-    });
+    final assetResults = await FoodDatabase.searchFoods(
+      query: query,
+      excludedCategories: excludedCats,
+      excludedNamePattern: excludedNames,
+      limit: 20 - customResults.length.clamp(0, 20),
+    );
 
-    final results = [...customResults, ...assetResults].take(20).toList();
+    // Stale-query guard: only update if query hasn't changed during await
+    if (!mounted || _searchQuery != query) return;
+
     setState(() {
-      _searchResults = results;
+      _searchResults = [...customResults, ...assetResults].take(20).toList();
       _searchLoading = false;
     });
   }
@@ -1165,10 +1199,12 @@ class _LogScreenState extends State<LogScreen> {
                 icon: const Icon(Icons.clear),
                 tooltip: AppLocalizations.of(context)!.clearSearch,
                 onPressed: () {
+                  _searchDebounce?.cancel();
                   _searchController.clear();
                   setState(() {
                     _searchQuery = '';
                     _searchResults = [];
+                    _searchLoading = false;
                   });
                 },
               )
@@ -1178,7 +1214,7 @@ class _LogScreenState extends State<LogScreen> {
         setState(() => _searchQuery = value);
         _searchFoods(value);
       },
-      onSubmitted: (value) => _searchFoods(value),
+      onSubmitted: (value) => _searchFoods(value, immediate: true),
     );
   }
 

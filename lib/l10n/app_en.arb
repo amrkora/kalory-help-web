@@ -111,6 +111,8 @@
   "veganDesc": "No animal products at all",
   "pescatarian": "Pescatarian",
   "pescatarianDesc": "Fish & seafood, no meat",
+  "halal": "Halal",
+  "halalDesc": "Filters out pork, lard & alcohol. Not a halal certification.",
 
   "save": "Save",
   "cancel": "Cancel",
@@ -212,7 +214,7 @@
   "dessert": "Dessert",
   "all": "All",
 
-  "appVersion": "Kalory Help v1.0.0",
+  "appVersion": "Kalory Help v2.0.0",
 
   "goodMorning": "Good morning",
   "goodAfternoon": "Good afternoon",

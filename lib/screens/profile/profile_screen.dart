@@ -387,13 +387,6 @@ class ProfileScreen extends StatelessWidget {
               value: _localizedActivityLevel(l10n, profile.activityLevel),
               onTap: () => _showEditActivityDialog(context),
             ),
-            _buildEditableInfoRow(
-              context,
-              icon: Icons.restaurant_menu,
-              label: l10n.dietType,
-              value: _localizedDietType(l10n, profile.dietType),
-              onTap: () => _showEditDietTypeDialog(context),
-            ),
           ],
         ),
       ),
@@ -444,6 +437,49 @@ class ProfileScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildHalalToggleRow(
+    BuildContext context,
+    ProfileProvider profile,
+    AppLocalizations l10n,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Icon(
+            Icons.mosque,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            size: 20,
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.halal,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                Text(
+                  l10n.halalDesc,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                ),
+              ],
+            ),
+          ),
+          Switch(
+            value: profile.halalMode,
+            onChanged: (value) {
+              profile.updateProfile({'halal_mode': value});
+            },
+          ),
+        ],
       ),
     );
   }
@@ -812,6 +848,7 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildPreferences(BuildContext context) {
     final localeProvider = Provider.of<LocaleProvider>(context);
+    final profile = context.watch<ProfileProvider>();
     final l10n = AppLocalizations.of(context)!;
     final isArabic = localeProvider.locale.languageCode == 'ar';
 
@@ -828,6 +865,14 @@ class ProfileScreen extends StatelessWidget {
                   ),
             ),
             const SizedBox(height: 8),
+            _buildEditableInfoRow(
+              context,
+              icon: Icons.restaurant_menu,
+              label: l10n.dietType,
+              value: _localizedDietType(l10n, profile.dietType),
+              onTap: () => _showEditDietTypeDialog(context),
+            ),
+            _buildHalalToggleRow(context, profile, l10n),
             ListTile(
               leading: Icon(
                 Icons.language,

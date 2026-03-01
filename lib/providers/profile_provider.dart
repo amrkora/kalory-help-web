@@ -21,6 +21,7 @@ class ProfileProvider extends ChangeNotifier {
   String? get gender => _profile?['gender'] as String?;
   String? get activityLevel => _profile?['activity_level'] as String?;
   String? get dietType => _profile?['diet_type'] as String?;
+  bool get halalMode => _profile?['halal_mode'] as bool? ?? true;
 
   // Goals helpers
   int get calorieGoal => goals?['calorie_goal'] ?? 2000;

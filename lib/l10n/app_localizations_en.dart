@@ -257,6 +257,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pescatarianDesc => 'Fish & seafood, no meat';
 
   @override
+  String get halal => 'Halal';
+
+  @override
+  String get halalDesc =>
+      'Filters out pork, lard & alcohol. Not a halal certification.';
+
+  @override
   String get save => 'Save';
 
   @override
@@ -435,7 +442,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get all => 'All';
 
   @override
-  String get appVersion => 'Kalory Help v1.0.0';
+  String get appVersion => 'Kalory Help v2.0.0';
 
   @override
   String get goodMorning => 'Good morning';
